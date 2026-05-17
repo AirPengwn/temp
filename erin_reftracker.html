@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Erin Lamberton &#8212; Reference Letter Tracker</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{font-family:var(--fn);color:var(--t1);background:var(--bg3);line-height:1.6;padding:0 0 2rem;}
+hr{border:none;border-top:.5px solid var(--bd);margin:1.5rem 0}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+.top-nav{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
+.back-btn{font-size:13px;padding:5px 14px;border-radius:999px;border:.5px solid var(--bds);background:transparent;color:var(--t2);text-decoration:none}
+.back-btn:hover{background:var(--bg2)}
+.pg-title{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.slabel{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:.6rem}
+.card{background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);padding:1.1rem 1.25rem;margin-bottom:.75rem}
+.tip{border-left:3px solid var(--teal);background:var(--bg2);padding:.75rem 1rem;margin-bottom:1.1rem;border-radius:0 var(--r1) var(--r1) 0;font-size:13px;color:var(--t2);line-height:1.6}
+.empty{background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);padding:2.5rem;text-align:center}
+.empty-icon{font-size:32px;margin-bottom:.65rem}
+.empty-title{font-size:15px;font-weight:500;margin-bottom:.35rem}
+.empty-body{font-size:13px;color:var(--t2);line-height:1.65}
+.footer{font-size:12px;color:var(--t3);text-align:center;margin-top:1.5rem;padding-bottom:1.5rem}
+
+.ref-card{background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);padding:1rem 1.25rem;margin-bottom:.65rem}
+.ref-card.asked{border-left:3px solid var(--teal)}
+.ref-card.confirmed{border-left:3px solid #185fa5}
+.ref-card.submitted{border-left:3px solid #534ab7}
+.ref-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.5rem;flex-wrap:wrap}
+.ref-name{font-size:15px;font-weight:500;color:var(--t1)}
+.ref-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .75rem;margin-bottom:.6rem}
+@media(max-width:480px){.ref-row{grid-template-columns:1fr}}
+.ref-field{}
+.ref-lbl{font-size:11px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.ref-input{font-size:13px;padding:6px 10px;border-radius:var(--r1);border:1px solid var(--bds);background:var(--bg2);color:var(--t1);width:100%;font-family:var(--fn)}
+.ref-input:focus{outline:none;border-color:var(--teal)}
+.ref-select{font-size:13px;padding:6px 10px;border-radius:var(--r1);border:1px solid var(--bds);background:var(--bg2);color:var(--t1);width:100%;font-family:var(--fn);cursor:pointer}
+.ref-select:focus{outline:none;border-color:var(--teal)}
+.ref-ta{font-size:13px;padding:6px 10px;border-radius:var(--r1);border:1px solid var(--bds);background:var(--bg2);color:var(--t1);width:100%;font-family:var(--fn);resize:vertical;min-height:52px}
+.ref-ta:focus{outline:none;border-color:var(--teal)}
+.ref-actions{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.3rem}
+.save-btn{font-size:12px;font-weight:500;padding:4px 14px;border-radius:999px;border:none;background:var(--teal);color:#fff;cursor:pointer;font-family:var(--fn)}
+.del-btn{font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;padding:0;font-family:var(--fn);margin-left:auto}
+.del-btn:hover{color:#c0392b}
+.saved-flash{font-size:12px;color:var(--teal-t);display:none;font-weight:500}
+.status-pill{font-size:11px;font-weight:500;padding:2px 9px;border-radius:999px}
+.sp-pending{background:var(--bg2);color:var(--t3)}
+.sp-asked{background:var(--teal-bg);color:var(--teal-t)}
+.sp-confirmed{background:var(--blue-bg);color:var(--blue)}
+.sp-submitted{background:#eeedfe;color:#534ab7}
+.sp-declined{background:#faece7;color:#993c1d}
+
+.add-btn{display:flex;align-items:center;gap:.5rem;font-size:13px;font-weight:500;padding:8px 18px;border-radius:999px;border:1.5px solid var(--teal);background:transparent;color:var(--teal-t);cursor:pointer;font-family:var(--fn);margin-bottom:1rem}
+.add-btn:hover{background:var(--teal-bg)}
+.summary-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.1rem}
+.sum-pill{font-size:12px;font-weight:500;padding:4px 12px;border-radius:999px;background:var(--bg);border:.5px solid var(--bd)}
+.deadline-list{margin-top:.5rem;padding:.6rem .85rem;background:var(--bg2);border-radius:var(--r1);font-size:12px;color:var(--t2);line-height:1.8}
+.deadline-list strong{font-weight:500;color:var(--t1)}
+
+/* ── Global nav ── */
+.global-nav{background:var(--bg);border-bottom:.5px solid var(--bd);position:sticky;top:0;z-index:100;padding:0 1rem}
+.gnav-wrap{max-width:720px;margin:0 auto;display:flex;align-items:center}
+.gnav-inner{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0 4px;row-gap:2px;scrollbar-width:none}
+.gnav-divider{display:inline-block;width:1px;height:18px;background:var(--bd);margin:0 6px;flex-shrink:0}
+.gnav-group{display:inline-flex;align-items:center;gap:0;flex-shrink:0}
+.gnav-group-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-right:6px;flex-shrink:0;padding:3px 7px;border-radius:5px;line-height:1}
+.gnav-group-label.gl-track{background:var(--teal-bg);color:var(--teal-t)}
+.gnav-group-label.gl-browse{background:var(--blue-bg);color:var(--blue)}
+.gnav-group-label.gl-write{background:var(--amber-bg);color:var(--amber-t)}
+.gnav-home{font-size:12px;font-weight:600;color:var(--t1);text-decoration:none;padding:10px 9px 10px 0;white-space:nowrap;border-right:.5px solid var(--bd);margin-right:2px;flex-shrink:0}
+.gnav-home:hover{color:var(--teal-t)}
+.gnav-link{font-size:11px;font-weight:500;color:var(--t3);text-decoration:none;padding:10px 7px;white-space:nowrap;border-bottom:2px solid transparent;transition:color .12s,border-color .12s;flex-shrink:0}
+.gnav-link:hover{color:var(--t1)}
+.gnav-link.active{color:var(--teal-t);border-bottom-color:var(--teal)}
+.gnav-toggle{flex-shrink:0;width:34px;height:34px;margin-left:8px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--bd);background:var(--bg2);color:var(--t2);cursor:pointer;border-radius:6px;font-family:var(--fn);font-size:14px;line-height:1;transition:background .12s,border-color .12s}
+.gnav-toggle:hover{background:var(--bg3);border-color:var(--bds);color:var(--t1)}
+html.dark .gnav-toggle{background:var(--bg2);border-color:var(--bd);color:var(--t1)}
+
+.page-header{padding:1.5rem 0 1.1rem;border-bottom:.5px solid var(--bd);margin-bottom:1.5rem}
+.page-header-eyebrow{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-t);margin-bottom:.25rem}
+.page-header-title{font-size:24px;font-weight:700;color:var(--t1);line-height:1.2;letter-spacing:-.02em;margin-bottom:.2rem}
+.page-header-sub{font-size:13px;color:var(--t2);line-height:1.5}
+/* Remove old top-nav bubble gap */
+.top-nav{display:none!important}
+
+.s-updated{background:#e8e4fe;color:#4c3bc4}
+
+html.dark .s-updated{background:#2d2563;color:#b5abfa}
+
+.page{max-width:720px;margin:0 auto;padding:0 1rem}
+/* ensure page-header gets left padding from .page */
+.page-header{padding:1.5rem 0 1.1rem;border-bottom:.5px solid var(--bd);margin-bottom:1.5rem}
+
+/* Layout */
+body{padding:0 0 2rem;margin:0}
+.page{max-width:720px;margin:0 auto;padding:0 1rem}
+.page-header{padding:1.5rem 0 1.1rem;border-bottom:.5px solid var(--bd);margin-bottom:1.5rem}
+
+/* ════════════════════════════════════
+   THEME VARIABLES — What's Next for Erin
+   Light: Medium grey scale palette
+   Dark: Forest green palette
+   ════════════════════════════════════ */
+
+/* Light mode base */
+:root {
+  /* Grey scale (Medium palette) */
+  --bg:   #FAFAFA;   /* grey-50  — card white */
+  --bg2:  #F5F5F5;   /* grey-100 — subtle areas */
+  --bg3:  #EEEEEE;   /* grey-200 — page background */
+  --t1:   #212121;   /* grey-900 — primary text */
+  --t2:   #424242;   /* grey-800 — secondary text */
+  --t3:   #757575;   /* grey-600 — muted text */
+  --bd:   rgba(0,0,0,0.10);
+  --bds:  rgba(0,0,0,0.22);
+  /* Shared */
+  --r1:8px;--r2:12px;
+  --fn:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  /* Green accents (from original palette) */
+  --teal:#4e9836;--teal-bg:#eaf3e5;--teal-t:#3c7b20;
+  --blue:#3a7878;--blue-bg:#e5f0f0;
+  --amber:#8a6f00;--amber-bg:#f5f0db;--amber-t:#6b5500;
+  --red:#993c1d;--red-bg:#faece7;--red-t:#993c1d;
+  --purple-bg:#e8e4fe;--purple-t:#4c3bc4;
+}
+
+/* System dark mode (auto) */
+@media(prefers-color-scheme:dark) {
+  :root {
+    --bg:#1c2018;--bg2:#242b1e;--bg3:#18201a;
+    --t1:#f0ede0;--t2:#c0c4a8;--t3:#9dc8c8;
+    --bd:rgba(157,200,200,0.15);--bds:rgba(157,200,200,0.28);
+    --teal-bg:#2a3d22;--teal-t:#8fc87a;
+    --blue-bg:#1e3535;--amber-bg:#3d3510;--amber-t:#d4c47a;
+    --red-bg:#3d1510;--red-t:#f5a490;
+    --purple-bg:#2d2563;--purple-t:#b5abfa;
+  }
+}
+
+/* Manual toggle — must come LAST so it overrides both :root and @media */
+html.dark {
+  --bg:#1c2018;--bg2:#242b1e;--bg3:#18201a;
+  --t1:#f0ede0;--t2:#c0c4a8;--t3:#9dc8c8;
+  --bd:rgba(157,200,200,0.15);--bds:rgba(157,200,200,0.28);
+  --teal-bg:#2a3d22;--teal-t:#8fc87a;
+  --blue-bg:#1e3535;--amber-bg:#3d3510;--amber-t:#d4c47a;
+  --red-bg:#3d1510;--red-t:#f5a490;
+  --purple-bg:#2d2563;--purple-t:#b5abfa;
+}
+/* Override light mode when .dark is set (belt AND suspenders) */
+html:not(.dark) {
+  --bg:#FAFAFA;--bg2:#F5F5F5;--bg3:#EEEEEE;
+  --t1:#212121;--t2:#424242;--t3:#757575;
+  --bd:rgba(0,0,0,0.10);--bds:rgba(0,0,0,0.22);
+  --teal-bg:#eaf3e5;--teal-t:#3c7b20;
+  --blue-bg:#e5f0f0;--amber-bg:#f5f0db;--amber-t:#6b5500;
+  --red-bg:#faece7;--red-t:#993c1d;
+  --purple-bg:#e8e4fe;--purple-t:#4c3bc4;
+}.opp-link{font-size:11px;font-weight:500;color:var(--teal-t);text-decoration:none;padding:2px 7px;border:1px solid var(--teal);border-radius:5px;white-space:nowrap}
+.opp-link:hover{background:var(--teal-bg)}
+.opp-link-sec{color:var(--blue);border-color:var(--blue)}
+.opp-link-sec:hover{background:var(--blue-bg)}
+
+/* Reference guidance section */
+.ref-guide{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.5rem}
+.ref-guide-section{background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);overflow:hidden}
+.ref-guide-heading{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--teal-t);background:var(--teal-bg);padding:.55rem 1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.ref-guide-heading:hover{background:var(--bg3)}
+.ref-guide-arrow{font-size:10px;color:var(--t3);transition:transform .2s;display:inline-block}
+.ref-guide-section.open .ref-guide-arrow{transform:rotate(90deg)}
+.ref-guide-body{display:none;padding:.75rem 1rem;font-size:13px;color:var(--t2);line-height:1.65;border-top:.5px solid var(--bd)}
+.ref-guide-section.open .ref-guide-body{display:block}
+.ref-guide-body p{margin:0 0 .6rem}
+.ref-guide-body p:last-child{margin-bottom:0}
+.ref-guide-body ul{margin:.3rem 0 .6rem 1.1rem;padding:0}
+.ref-guide-body ul:last-child{margin-bottom:0}
+.ref-guide-body li{margin-bottom:.35rem}
+.ref-guide-body strong{color:var(--t1);font-weight:600}
+</style>
+<script>
+(function(){
+  var saved=localStorage.getItem('erin_theme');
+  var prefersDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;
+  if(saved==='dark'||(!saved&&prefersDark)) document.documentElement.classList.add('dark');
+  function upBtn(){var b=document.getElementById('theme-toggle');if(b)b.innerHTML=document.documentElement.classList.contains('dark')?'&#9728;':'&#127769;';}
+  document.addEventListener('DOMContentLoaded',upBtn);
+  window.__toggleTheme=function(){var d=document.documentElement.classList.toggle('dark');localStorage.setItem('erin_theme',d?'dark':'light');upBtn();};
+})();
+</script>
+</head>
+<body>
+
+<!-- GLOBAL NAV -->
+<nav class="global-nav">
+  <div class="gnav-wrap">
+    <div class="gnav-inner">
+      <a href="index.html" class="gnav-home">&#127968; Home</a>
+      <span class="gnav-divider"></span>
+      <div class="gnav-group">
+        <span class="gnav-group-label gl-track">Track</span>
+        <a href="erin_mylist.html" class="gnav-link">&#9733; My List</a>
+        <a href="erin_timeline.html" class="gnav-link">&#128197; Timeline</a>
+        <a href="erin_applications.html" class="gnav-link">&#128196; Apps</a>
+        <a href="erin_proftracker.html" class="gnav-link">&#128100; Profs</a>
+        <a href="erin_reftracker.html" class="gnav-link active">&#128393; Refs</a>
+      </div>
+      <span class="gnav-divider"></span>
+      <div class="gnav-group">
+        <span class="gnav-group-label gl-browse">Browse</span>
+        <a href="erin_programs.html" class="gnav-link">&#127979; Programs</a>
+        <a href="erin_internships.html" class="gnav-link">&#128203; Internships</a>
+        <a href="erin_jobs.html" class="gnav-link">&#128188; Jobs</a>
+        <a href="erin_service.html" class="gnav-link">&#127807; Service</a>
+      </div>
+      <span class="gnav-divider"></span>
+      <div class="gnav-group">
+        <span class="gnav-group-label gl-write">Write</span>
+        <a href="erin_writing_samples.html" class="gnav-link">&#9997; Writing</a>
+        <a href="erin_outreach.html" class="gnav-link">&#128203; Outreach</a>
+      </div>
+    </div>
+    <button class="gnav-toggle" id="theme-toggle" onclick="__toggleTheme()" title="Toggle dark/light mode">&#127769;</button>
+  </div>
+</nav>
+
+<div class="page">
+
+<div class="page-header">
+  <div class="page-header-eyebrow">What's Next for Erin</div>
+  <div class="page-header-title">Reference Letter Tracker</div>
+  <div class="page-header-sub">Manage recommenders — status, materials sent, deadlines</div>
+</div>
+
+<div class="top-nav">
+  <a href="erin_mylist.html" class="back-btn">&#8592; My List</a>
+  <span class="pg-title">Reference Letters</span>
+</div>
+
+<div class="card" style="margin-bottom:1rem">
+  <div style="font-size:18px;font-weight:500;margin-bottom:3px">&#128393; Reference Letter Tracker</div>
+  <div style="font-size:13px;color:var(--t2)" id="ref-count">Loading&#8230;</div>
+</div>
+<div class="tip" style="margin-bottom:.75rem">
+  &#9888;&nbsp; Most grad programs require <strong>2&ndash;3 letters</strong>. Federal positions often need 3. Ask at least <strong>4&ndash;6 weeks in advance</strong> &mdash; earlier is always better. Faculty receive many requests in fall; reach out in August&ndash;September before the rush.
+</div>
+
+<div class="ref-guide">
+
+  <div class="ref-guide-section">
+    <div class="ref-guide-heading"><span>&#128221; Who to ask</span><span class="ref-guide-arrow">&#9654;</span></div>
+    <div class="ref-guide-body">
+      <p>The strongest letters for environmental science grad programs come from people who have seen your scientific work directly. In rough priority order:</p>
+      <ul>
+        <li><strong>Your capstone advisor / GEOL 495 supervisor</strong> &mdash; can speak directly to your Pigeon River research, field methods, and independent thinking. This is your strongest letter for any wetland, water quality, or contaminated-site program.</li>
+        <li><strong>Lab / field course instructors</strong> (GEOL 455 Wetlands, GEOL 423 Contaminated Rivers, ENVH 310 Water Quality, NRM 479 Mammalogy) &mdash; these professors saw your hands-on skills and know your technical depth.</li>
+        <li><strong>Research or internship supervisors</strong> &mdash; anyone who supervised you in a professional or field context can speak to work ethic, reliability, and applied skills.</li>
+        <li><strong>Academic advisor or department chair</strong> &mdash; good for a third letter if you need one, attesting to overall academic record and character.</li>
+      </ul>
+      <p style="color:var(--red-t);font-size:12px">&#9888; Avoid asking professors from large lecture courses who don&rsquo;t know you personally &mdash; a generic letter hurts more than it helps.</p>
+    </div>
+  </div>
+
+  <div class="ref-guide-section">
+    <div class="ref-guide-heading"><span>&#9993; How to ask &mdash; the right way</span><span class="ref-guide-arrow">&#9654;</span></div>
+    <div class="ref-guide-body">
+      <p>Send a personal email. Include:</p>
+      <ul>
+        <li><strong>A specific reminder of your work together</strong> &mdash; the course, the project, a result they&rsquo;d remember. Don&rsquo;t assume they remember you clearly.</li>
+        <li><strong>What programs you&rsquo;re applying to</strong> &mdash; list them with deadlines. A table works well: Program | Deadline | Submission method.</li>
+        <li><strong>What you&rsquo;d like them to highlight</strong> &mdash; give them a hook specific to what they know about you. &ldquo;I&rsquo;d love it if you could speak to my fieldwork in the Pigeon River watershed and my ability to design and execute independent research.&rdquo;</li>
+        <li><strong>Your resume and SOP draft</strong> &mdash; attach both so they have everything without chasing you.</li>
+        <li><strong>Submission instructions</strong> for each program &mdash; some email the recommender directly; others use a portal. Clarify this upfront.</li>
+        <li><strong>An explicit out</strong> &mdash; say &ldquo;Please let me know if you&rsquo;re not able to commit to this timeline &mdash; I completely understand.&rdquo; This makes it easy to decline gracefully, and you&rsquo;ll get a better letter from someone who genuinely said yes.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ref-guide-section">
+    <div class="ref-guide-heading"><span>&#128197; Timing strategy</span><span class="ref-guide-arrow">&#9654;</span></div>
+    <div class="ref-guide-body">
+      <ul>
+        <li><strong>August&ndash;September 2026:</strong> Reach out to all recommenders before faculty are overwhelmed with fall requests. Give them the full program list and all deadlines at this point.</li>
+        <li><strong>2&ndash;3 weeks before each deadline:</strong> Send a friendly reminder with the specific program name, deadline, and submission link. Don&rsquo;t wait until the week of.</li>
+        <li><strong>After submission:</strong> Send a thank-you email. Tell them the outcome when you hear back &mdash; faculty genuinely appreciate knowing how things turned out.</li>
+        <li><strong>If a deadline passes without confirmation:</strong> Check the portal first. Then follow up politely: &ldquo;Just checking in to make sure the letter for [Program] went through &mdash; the deadline was [date].&rdquo;</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ref-guide-section">
+    <div class="ref-guide-heading"><span>&#128196; Materials packet to send them</span><span class="ref-guide-arrow">&#9654;</span></div>
+    <div class="ref-guide-body">
+      <p>Put together a single organized email or shared folder with:</p>
+      <ul>
+        <li>Your current <strong>CV / resume</strong></li>
+        <li>A <strong>draft statement of purpose</strong> (even if not final &mdash; it helps them tailor the letter)</li>
+        <li>A <strong>program list with deadlines</strong> &mdash; one table, all programs, sorted by deadline date</li>
+        <li>A brief <strong>&ldquo;what I&rsquo;d like you to highlight&rdquo;</strong> paragraph specific to this recommender&rsquo;s knowledge of you</li>
+        <li><strong>Submission instructions</strong> for each program (portal link, direct email, etc.)</li>
+        <li>Your <strong>unofficial transcript</strong> if they want context on your full coursework record</li>
+      </ul>
+      <p style="font-size:12px;color:var(--t3)">Make it as easy as possible for them. The more organized your packet, the better and faster the letter.</p>
+    </div>
+  </div>
+
+  <div class="ref-guide-section">
+    <div class="ref-guide-heading"><span>&#128161; Erin-specific tips</span><span class="ref-guide-arrow">&#9654;</span></div>
+    <div class="ref-guide-body">
+      <ul>
+        <li>Your <strong>Pigeon River / Hurricane Helene capstone</strong> is your strongest asset &mdash; ensure at least one recommender can speak to this project specifically: the field methods, the contamination findings, and your independent initiative.</li>
+        <li>For <strong>NC State / Dr. Forrester&rsquo;s lab</strong>: if you have already emailed Dr. Forrester and received a response, mention that in your ask to your recommender &mdash; it signals that this program is realistic and helps them frame the letter.</li>
+        <li>For <strong>federal positions</strong> (USGS, FWS, USACE): a supervisor-level reference who can speak to field skills and reliability carries the most weight. Academic letters are secondary for these roles.</li>
+        <li>If asking a professor you haven&rsquo;t been in touch with since graduation: <strong>re-introduce yourself clearly</strong> &mdash; your name, the course, the semester, and a specific memory they&rsquo;d have of you. Professors teach hundreds of students each year; help them place you.</li>
+        <li>WCU faculty who wrote your undergraduate recommendations (if any) are the warmest ask &mdash; they already know you well and want to support your next step.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+<div class="summary-row" id="summary-row"></div>
+<div id="deadline-section" style="margin-bottom:1rem"></div>
+<button class="add-btn" onclick="addCard()">&#43; Add recommender</button>
+<div id="ref-body"></div>
+
+<p class="footer">Data drawn from your saved opportunities in My List.<br><br>
+<a href="erin_mylist.html">&#8592; My List</a>&nbsp;&nbsp;<a href="index.html">&#8592; Home</a></p>
+</div>
+<script>
+
+var BIN='6a039aa4250b1311c33f2bac',KEY='$2a$10$zEyOgbH7E5.fBt9UlxHh8.yPbLUnHJKEhpY2z9WCQJ1fS/WLCOBpa',STORE='erin_mylist_v1';
+function load(){try{return JSON.parse(localStorage.getItem(STORE)||'{}')}catch(e){return {}}}
+function getSavedItems(){var m=load();return Object.values(m).filter(function(it){return!it._done||true});}
+
+
+var RSTORE = 'erin_ref_letters';
+
+function loadRefs(){ try{ return JSON.parse(localStorage.getItem(RSTORE)||'[]'); } catch(e){ return []; } }
+function saveRefs(arr){ localStorage.setItem(RSTORE,JSON.stringify(arr)); }
+
+// Primary-device gate — only Erin's laptop writes to cloud. Defined locally so this
+// page doesn't depend on another page having loaded first.
+var PRIMARY_KEY='erin_primary_device';
+function isPrimary(){ return localStorage.getItem(PRIMARY_KEY)==='1'; }
+
+
+function pushRefs(arr){
+  if(!isPrimary()) return; // Only primary device writes to cloud
+  fetch('https://api.jsonbin.io/v3/b/'+BIN+'/latest',{headers:{'X-Master-Key':KEY}})
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var rec=data.record||{};
+    rec.refs=arr;
+    fetch('https://api.jsonbin.io/v3/b/'+BIN,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':KEY,'X-Bin-Versioning':'false'},
+      body:JSON.stringify(rec)
+    });
+  }).catch(function(){});
+}
+
+
+function pullRefs(){
+  fetch('https://api.jsonbin.io/v3/b/'+BIN+'/latest',{headers:{'X-Master-Key':KEY}})
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(data.record && data.record.refs){
+      var cloud=data.record.refs;
+      var local=loadRefs();
+      if(isPrimary()){
+        // Primary device: local is truth — push local to cloud
+        pushRefs(local);
+      } else {
+        // Secondary device: cloud wins — overwrite local
+        saveRefs(cloud);
+      }
+    }
+    render();
+  }).catch(function(){ render(); });
+}
+
+function statusCls(s){
+  return {pending:'sp-pending',asked:'sp-asked',confirmed:'sp-confirmed',submitted:'sp-submitted',declined:'sp-declined'}[s]||'sp-pending';
+}
+function statusLbl(s){
+  return {pending:'Not yet asked',asked:'Asked',confirmed:'Confirmed yes',submitted:'Letter submitted',declined:'Declined'}[s]||'Not yet asked';
+}
+
+// Chip for a linked application — deep-links into the Applications page card
+function makeAppChip(rid, app){
+  var chip=document.createElement('span');
+  chip.style.cssText='display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 4px 2px 9px;border-radius:999px;background:var(--blue-bg);color:var(--blue);font-weight:500';
+  var lnk=document.createElement('a');
+  lnk.href='erin_applications.html#acard-'+app.id;
+  lnk.style.cssText='color:inherit;text-decoration:none';
+  lnk.textContent=((app.programTitle||'Untitled').split('—')[0].trim()).slice(0,32);
+  chip.appendChild(lnk);
+  var x=document.createElement('button');
+  x.innerHTML='&times;'; x.title='Unlink';
+  x.style.cssText='background:none;border:none;color:var(--blue);cursor:pointer;font-size:14px;padding:0 4px;line-height:1';
+  x.onclick=function(){
+    var arr=loadRefs();
+    var rec=arr.find(function(x){return x.id===rid;});
+    if(!rec) return;
+    rec.applicationIds=(rec.applicationIds||[]).filter(function(id){return id!==app.id;});
+    saveRefs(arr); pushRefs(arr); render();
+  };
+  chip.appendChild(x);
+  return chip;
+}
+
+function saveCard(id){
+  var arr=loadRefs();
+  var idx=arr.findIndex(function(r){return r.id===id;});
+  if(idx<0) return;
+  arr[idx].name      = document.getElementById('rn-'+id).value;
+  arr[idx].title     = document.getElementById('rt-'+id).value;
+  arr[idx].email     = document.getElementById('re-'+id).value;
+  arr[idx].dateAsked = document.getElementById('rda-'+id).value;
+  arr[idx].status    = document.getElementById('rs-'+id).value;
+  arr[idx].materials = document.getElementById('rm-'+id).value;
+  if(document.getElementById('rp-'+id)) arr[idx].programs = document.getElementById('rp-'+id).value;
+  arr[idx].notes     = document.getElementById('rno-'+id).value;
+  saveRefs(arr); pushRefs(arr);
+  var fl=document.getElementById('rfl-'+id); fl.style.display='inline'; setTimeout(function(){fl.style.display='none';},2000);
+  updateSummary();
+  updateCardClass(id,arr[idx].status);
+}
+
+function updateCardClass(id,status){
+  var card=document.getElementById('rcard-'+id);
+  if(!card) return;
+  card.className='ref-card'+(status&&status!=='pending'?' '+status:'');
+}
+
+function deleteCard(id){
+  if(!confirm('Remove this recommender?')) return;
+  var arr=loadRefs().filter(function(r){return r.id!==id;});
+  saveRefs(arr); pushRefs(arr);
+  render();
+}
+
+function addCard(){
+  var arr=loadRefs();
+  var id='r'+Date.now();
+  arr.push({id:id,name:'',title:'',email:'',dateAsked:'',status:'pending',materials:'',notes:'',applicationIds:[]});
+  saveRefs(arr); pushRefs(arr); render();
+  setTimeout(function(){ var el=document.getElementById('rcard-'+id); if(el)el.scrollIntoView({behavior:'smooth',block:'center'}); },100);
+}
+
+function updateSummary(){
+  var arr=loadRefs();
+  var counts={pending:0,asked:0,confirmed:0,submitted:0,declined:0};
+  arr.forEach(function(r){counts[r.status||'pending']++;});
+  var row=document.getElementById('summary-row'); row.innerHTML='';
+  var labels={confirmed:'Confirmed',submitted:'Submitted',asked:'Asked',pending:'Not asked yet',declined:'Declined'};
+  ['confirmed','submitted','asked','pending','declined'].forEach(function(k){
+    if(counts[k]>0){
+      var pill=document.createElement('span'); pill.className='sum-pill';
+      pill.textContent=counts[k]+' '+labels[k]; row.appendChild(pill);
+    }
+  });
+}
+
+function buildDeadlineList(){
+  // Pull saved grad program deadlines to show as reference
+  var items=getSavedItems().filter(function(it){ return it.type==='Graduate Program' && it.deadline && !/rolling|verify|tbd/i.test(it.deadline); });
+  if(!items.length) return null;
+  var div=document.createElement('div'); div.className='deadline-list';
+  div.innerHTML='<strong>Program deadlines (from your saved list)</strong><br>';
+  items.slice(0,8).forEach(function(it){
+    div.innerHTML+=it.title.split('—')[0].trim().slice(0,40)+'&#8230; &nbsp;<strong>'+it.deadline+'</strong><br>';
+  });
+  return div;
+}
+
+function render(){
+  var arr=loadRefs();
+  document.getElementById('ref-count').textContent=arr.length+' recommender'+(arr.length===1?'':'s')+' tracked';
+  updateSummary();
+
+  var dl=document.getElementById('deadline-section');
+  dl.innerHTML='';
+  var dlDiv=buildDeadlineList();
+  if(dlDiv) dl.appendChild(dlDiv);
+
+  var body=document.getElementById('ref-body'); body.innerHTML='';
+
+  if(!arr.length){
+    body.innerHTML='<div class="empty"><div class="empty-icon">&#128393;</div><div class="empty-title">No recommenders added yet</div><div class="empty-body">Click &ldquo;Add recommender&rdquo; to start tracking. Most grad programs require 2–3 letters. Reach out early — faculty are busy.</div></div>';
+    return;
+  }
+
+  var order={confirmed:0,asked:1,submitted:2,pending:3,declined:4};
+  arr.sort(function(a,b){return (order[a.status||'pending']||3)-(order[b.status||'pending']||3);});
+
+  arr.forEach(function(r){
+    var card=document.createElement('div');
+    card.className='ref-card'+(r.status&&r.status!=='pending'?' '+r.status:'');
+    card.id='rcard-'+r.id;
+
+    var header=document.createElement('div'); header.className='ref-header';
+    var left=document.createElement('div');
+    var nm=document.createElement('div'); nm.className='ref-name'; nm.textContent=r.name||'New recommender'; left.appendChild(nm);
+    if(r.title){ var tl=document.createElement('div'); tl.style.cssText='font-size:12px;color:var(--t3)'; tl.textContent=r.title; left.appendChild(tl); }
+    if(r.programs){
+      var pg=document.createElement('div'); pg.style.cssText='font-size:11px;color:var(--teal-t);font-weight:500;margin-top:2px';
+      pg.innerHTML='&#128197; Requesting for: '+r.programs; left.appendChild(pg);
+    }
+    // Crosslinks to My List and Applications
+    var xlRow=document.createElement('div'); xlRow.style.cssText='display:flex;gap:6px;flex-wrap:wrap;margin-top:4px';
+    var xlList=document.createElement('a'); xlList.href='erin_mylist.html'; xlList.className='opp-link'; xlList.innerHTML='&#9733; My List'; xlRow.appendChild(xlList);
+    var xlApp=document.createElement('a'); xlApp.href='erin_applications.html'; xlApp.className='opp-link opp-link-sec'; xlApp.innerHTML='&#128196; Applications'; xlRow.appendChild(xlApp);
+    left.appendChild(xlRow);
+    header.appendChild(left);
+    var sp=document.createElement('span'); sp.className='status-pill '+statusCls(r.status||'pending'); sp.id='rsp-'+r.id; sp.textContent=statusLbl(r.status||'pending');
+    header.appendChild(sp);
+    card.appendChild(header);
+
+    var row=document.createElement('div'); row.className='ref-row';
+
+    function inp(lbl,id,val,type){
+      var f=document.createElement('div'); f.className='ref-field';
+      var l=document.createElement('div'); l.className='ref-lbl'; l.textContent=lbl; f.appendChild(l);
+      var i=document.createElement('input'); i.className='ref-input'; i.id=id; i.value=val||''; i.placeholder=lbl;
+      if(type==='date') i.type='date';
+      f.appendChild(i); return f;
+    }
+
+    row.appendChild(inp('Full name','rn-'+r.id,r.name));
+    row.appendChild(inp('Title / position','rt-'+r.id,r.title));
+    row.appendChild(inp('Email','re-'+r.id,r.email));
+    row.appendChild(inp('Requesting for (programs/positions)','rp-'+r.id,r.programs));
+    row.appendChild(inp('Date asked','rda-'+r.id,r.dateAsked,'date'));
+
+    var sf=document.createElement('div'); sf.className='ref-field';
+    var sl=document.createElement('div'); sl.className='ref-lbl'; sl.textContent='Status'; sf.appendChild(sl);
+    var sel=document.createElement('select'); sel.className='ref-select'; sel.id='rs-'+r.id;
+    [{v:'pending',l:'Not yet asked'},{v:'asked',l:'Asked'},{v:'confirmed',l:'Confirmed yes'},{v:'submitted',l:'Letter submitted'},{v:'declined',l:'Declined'}].forEach(function(o){
+      var opt=document.createElement('option'); opt.value=o.v; opt.textContent=o.l; if(r.status===o.v) opt.selected=true; sel.appendChild(opt);
+    });
+    sel.onchange=function(){ var s=sel.value; var spl=document.getElementById('rsp-'+r.id); spl.textContent=statusLbl(s); spl.className='status-pill '+statusCls(s); updateCardClass(r.id,s); };
+    sf.appendChild(sel); row.appendChild(sf);
+    card.appendChild(row);
+
+    function ta(lbl,id,val,ph){
+      var f=document.createElement('div'); f.className='ref-field'; f.style.marginBottom='.5rem';
+      var l=document.createElement('div'); l.className='ref-lbl'; l.textContent=lbl; f.appendChild(l);
+      var t=document.createElement('textarea'); t.className='ref-ta'; t.id=id; t.value=val||''; t.placeholder=ph||lbl; f.appendChild(t);
+      return f;
+    }
+    // ── Linked applications (chip multi-select) ──
+    // "Dr. Lee is writing for NC State, LSU, CSU" in one click each. Stored on the
+    // recommender as r.applicationIds=[appId,…]; reverse-rendered on the app card.
+    var appsLbl=document.createElement('div'); appsLbl.className='ref-lbl';
+    appsLbl.style.cssText='margin-top:.5rem;margin-bottom:.3rem'; appsLbl.textContent='Writing letter for these applications';
+    card.appendChild(appsLbl);
+    var appsChips=document.createElement('div'); appsChips.id='rapps-'+r.id;
+    appsChips.style.cssText='display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.65rem;align-items:center';
+    try{
+      var allApps=JSON.parse(localStorage.getItem('erin_applications_v1')||'[]');
+      var selectedIds=r.applicationIds||[];
+      selectedIds.forEach(function(aid){
+        var a=allApps.find(function(x){return x.id===aid;});
+        if(a) appsChips.appendChild(makeAppChip(r.id, a));
+      });
+      var addSel=document.createElement('select');
+      addSel.style.cssText='font-size:11px;padding:3px 8px;border:.5px solid var(--bd);border-radius:5px;background:var(--bg2);color:var(--t2);outline:none;font-family:var(--fn);max-width:280px';
+      var defOpt=document.createElement('option'); defOpt.value=''; defOpt.textContent='+ Add application…'; addSel.appendChild(defOpt);
+      var availableApps=allApps.filter(function(a){ return selectedIds.indexOf(a.id)<0; });
+      if(!availableApps.length){
+        var noneOpt=document.createElement('option'); noneOpt.value=''; noneOpt.disabled=true; noneOpt.textContent='(no other applications yet)'; addSel.appendChild(noneOpt);
+      }
+      availableApps.forEach(function(a){
+        var o=document.createElement('option'); o.value=a.id;
+        o.textContent=((a.programTitle||'Untitled application').split('—')[0].trim()).slice(0,60);
+        addSel.appendChild(o);
+      });
+      addSel.onchange=function(){
+        if(!addSel.value) return;
+        var arr=loadRefs();
+        var rec=arr.find(function(x){return x.id===r.id;});
+        if(!rec) return;
+        if(!rec.applicationIds) rec.applicationIds=[];
+        rec.applicationIds.push(addSel.value);
+        saveRefs(arr); pushRefs(arr); render();
+      };
+      appsChips.appendChild(addSel);
+    }catch(e){}
+    card.appendChild(appsChips);
+
+    card.appendChild(ta('Materials sent to them','rm-'+r.id,r.materials,'Resume, SOP draft, program list, deadlines...'));
+    card.appendChild(ta('Notes','rno-'+r.id,r.notes,'Response status, follow-up needed, reminders...'));
+
+    var acts=document.createElement('div'); acts.className='ref-actions';
+    var sb=document.createElement('button'); sb.className='save-btn'; sb.textContent='Save';
+    sb.onclick=(function(rid){return function(){saveCard(rid);};})(r.id); acts.appendChild(sb);
+    var fl=document.createElement('span'); fl.className='saved-flash'; fl.id='rfl-'+r.id; fl.textContent='Saved ✓'; acts.appendChild(fl);
+    var db=document.createElement('button'); db.className='del-btn'; db.textContent='Remove';
+    db.onclick=(function(rid){return function(){deleteCard(rid);};})(r.id); acts.appendChild(db);
+    card.appendChild(acts);
+
+    body.appendChild(card);
+  });
+}
+
+// ── Hash-based deep link: scroll to and highlight a specific recommender card on arrival ──
+function scrollToHash(){
+  var hash=window.location.hash;
+  if(!hash) return;
+  var el=document.querySelector(hash);
+  if(!el) return;
+  setTimeout(function(){
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+    var prev=el.style.boxShadow;
+    el.style.transition='box-shadow .35s';
+    el.style.boxShadow='0 0 0 3px var(--teal)';
+    setTimeout(function(){ el.style.boxShadow=prev||''; },1800);
+  },150);
+}
+var _origRefRender=render;
+render=function(){ _origRefRender.apply(this,arguments); scrollToHash(); };
+window.addEventListener('hashchange', scrollToHash);
+
+pullRefs();
+
+
+// Reference guide collapsible sections
+document.querySelectorAll('.ref-guide-heading').forEach(function(hdr){
+  hdr.addEventListener('click', function(){
+    hdr.parentElement.classList.toggle('open');
+  });
+});
+
+</script>
+</body>
+</html>

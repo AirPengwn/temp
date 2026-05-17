@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Opportunity List — What's Next for Erin</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{font-family:var(--fn);color:var(--t1);background:var(--bg3);line-height:1.6;padding:0 0 2rem;}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+.top-nav{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem}
+.back-btn{font-size:13px;padding:5px 14px;border-radius:999px;border:.5px solid var(--bds);background:transparent;color:var(--t2);text-decoration:none}
+.back-btn:hover{background:var(--bg2)}
+.pg-title{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.mode-tabs{display:flex;margin-bottom:1.25rem;background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);overflow:hidden}
+.mode-tab{flex:1;font-size:13px;font-weight:500;padding:10px;border:none;background:transparent;color:var(--t2);cursor:pointer;font-family:var(--fn);border-right:.5px solid var(--bd)}
+.mode-tab:last-child{border-right:none}
+.mode-tab.active{background:var(--teal);color:#fff}
+.mode-tab:not(.active):hover{background:var(--bg2);color:var(--t1)}
+.hero{background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
+.hero-title{font-size:18px;font-weight:500}
+.hero-right{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap}
+.count-pill{background:var(--teal-bg);color:var(--teal-t);font-size:12px;font-weight:500;padding:4px 12px;border-radius:999px}
+.sync-status{font-size:12px;color:var(--teal-t);font-weight:500;opacity:0;transition:opacity .3s}
+.sync-status.show{opacity:1}
+.filter-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.1rem}
+.f-btn{font-size:12px;font-weight:500;padding:3px 12px;border-radius:999px;border:1px solid var(--bds);background:transparent;color:var(--t2);cursor:pointer;font-family:var(--fn)}
+.f-btn.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.f-btn:not(.on):hover{background:var(--bg2)}
+.sec-label{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin:1.25rem 0 .6rem;display:flex;align-items:center;gap:.5rem}
+.sec-count{font-weight:400}
+.item-card{background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);padding:.9rem 1.1rem;margin-bottom:.55rem}
+.item-card.done{opacity:.45}
+.item-row1{display:flex;align-items:flex-start;gap:.75rem}
+.item-check{width:17px;height:17px;border:1.5px solid var(--bds);border-radius:4px;cursor:pointer;appearance:none;-webkit-appearance:none;background:transparent;flex-shrink:0;margin-top:2px}
+.item-check:checked{background:var(--teal);border-color:var(--teal)}
+.item-main{flex:1;min-width:0}
+.item-title{font-size:14px;font-weight:500;color:var(--t1);line-height:1.4;margin-bottom:1px}
+.item-org{font-size:12px;color:var(--t3);margin-bottom:.35rem}
+.item-pills{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.4rem}
+.ip{font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px}
+.ip-grad{background:var(--teal-bg);color:var(--teal-t)}
+.ip-intern{background:var(--blue-bg);color:var(--blue)}
+.ip-job{background:#eeedfe;color:#534ab7}
+.ip-service{background:var(--amber-bg);color:var(--amber-t)}
+.ip-next{background:var(--bg2);color:var(--t3);border:.5px solid var(--bd)}
+
+.item-meta{display:flex;flex-wrap:wrap;gap:4px 16px;margin-bottom:.4rem;font-size:12px;color:var(--t2)}
+.im-lbl{font-weight:500;color:var(--t1)}
+.body-text{display:none}
+
+.item-actions{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.25rem}
+.act-link{font-size:12px;color:var(--blue)}
+.act-btn{font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;padding:0;font-family:var(--fn)}
+.act-btn:hover{color:var(--t1)}
+.act-sep{color:var(--bds)}
+.act-remove{font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;padding:0;font-family:var(--fn);margin-left:auto}
+.act-remove:hover{color:#c0392b}
+.note-area{margin-top:.6rem;display:none}
+.note-area.open{display:block}
+.note-input{width:100%;font-size:12px;padding:6px 10px;border-radius:var(--r1);border:1px solid var(--bds);background:var(--bg2);color:var(--t1);font-family:var(--fn);resize:vertical;min-height:52px}
+.note-input:focus{outline:none;border-color:var(--teal)}
+.note-save{font-size:12px;font-weight:500;padding:4px 12px;border-radius:999px;border:none;background:var(--teal);color:#fff;cursor:pointer;font-family:var(--fn);margin-top:4px}
+.note-display{font-size:12px;color:var(--teal-t);font-style:italic;margin-top:.35rem;padding:.4rem .6rem;background:var(--teal-bg);border-radius:var(--r1)}
+.browse-card{background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);padding:.85rem 1.1rem;margin-bottom:.5rem}
+.browse-card.is-saved{border:1.5px solid var(--teal)}
+.browse-title{font-size:14px;font-weight:500;color:var(--t1);line-height:1.4;margin-bottom:1px}
+.browse-org{font-size:12px;color:var(--t3);margin-bottom:.3rem}
+.browse-meta{font-size:12px;color:var(--t2);margin-bottom:.35rem}
+.browse-body{font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:.4rem;display:none}
+.browse-body.open{display:block}
+.browse-actions{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap}
+.b-save-btn{font-size:12px;font-weight:500;padding:3px 12px;border-radius:999px;border:1.5px solid var(--teal);background:transparent;color:var(--teal-t);cursor:pointer;font-family:var(--fn)}
+.b-save-btn:hover,.b-save-btn.saved{background:var(--teal-bg)}
+.b-toggle{font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;padding:0;font-family:var(--fn)}
+.b-toggle:hover{color:var(--t1)}
+.search-input{font-size:13px;padding:8px 12px;border-radius:var(--r1);border:1px solid var(--bds);background:var(--bg);color:var(--t1);width:100%;font-family:var(--fn);margin-bottom:.85rem}
+.search-input:focus{outline:none;border-color:var(--teal)}
+.tip{border-left:3px solid var(--teal);background:var(--bg2);padding:.75rem 1rem;margin-bottom:1rem;border-radius:0 var(--r1) var(--r1) 0;font-size:13px;color:var(--t2);line-height:1.6}
+.empty{background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);padding:2.5rem;text-align:center}
+.empty-icon{font-size:32px;margin-bottom:.65rem}
+.empty-title{font-size:15px;font-weight:500;margin-bottom:.35rem}
+.empty-body{font-size:13px;color:var(--t2);line-height:1.65}
+.footer{font-size:12px;color:var(--t3);text-align:center;margin-top:1.5rem;padding-bottom:1.5rem}
+
+/* ── Global nav ── */
+.global-nav{background:var(--bg);border-bottom:.5px solid var(--bd);position:sticky;top:0;z-index:100;padding:0 1rem}
+.gnav-wrap{max-width:720px;margin:0 auto;display:flex;align-items:center}
+.gnav-inner{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0 4px;row-gap:2px;scrollbar-width:none}
+.gnav-divider{display:inline-block;width:1px;height:18px;background:var(--bd);margin:0 6px;flex-shrink:0}
+.gnav-group{display:inline-flex;align-items:center;gap:0;flex-shrink:0}
+.gnav-group-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-right:6px;flex-shrink:0;padding:3px 7px;border-radius:5px;line-height:1}
+.gnav-group-label.gl-track{background:var(--teal-bg);color:var(--teal-t)}
+.gnav-group-label.gl-browse{background:var(--blue-bg);color:var(--blue)}
+.gnav-group-label.gl-write{background:var(--amber-bg);color:var(--amber-t)}
+.gnav-home{font-size:12px;font-weight:600;color:var(--t1);text-decoration:none;padding:10px 9px 10px 0;white-space:nowrap;border-right:.5px solid var(--bd);margin-right:2px;flex-shrink:0}
+.gnav-home:hover{color:var(--teal-t)}
+.gnav-link{font-size:11px;font-weight:500;color:var(--t3);text-decoration:none;padding:10px 7px;white-space:nowrap;border-bottom:2px solid transparent;transition:color .12s,border-color .12s;flex-shrink:0}
+.gnav-link:hover{color:var(--t1)}
+.gnav-link.active{color:var(--teal-t);border-bottom-color:var(--teal)}
+.gnav-toggle{flex-shrink:0;width:34px;height:34px;margin-left:8px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--bd);background:var(--bg2);color:var(--t2);cursor:pointer;border-radius:6px;font-family:var(--fn);font-size:14px;line-height:1;transition:background .12s,border-color .12s}
+.gnav-toggle:hover{background:var(--bg3);border-color:var(--bds);color:var(--t1)}
+html.dark .gnav-toggle{background:var(--bg2);border-color:var(--bd);color:var(--t1)}
+/* Manual dark override (toggle) */
+
+html.dark body{background:var(--bg3);color:var(--t1)}
+
+/* ── Global nav ── */
+.global-nav{background:var(--bg);border-bottom:.5px solid var(--bd);position:sticky;top:0;z-index:100;padding:0 1rem}
+.gnav-wrap{max-width:720px;margin:0 auto;display:flex;align-items:center}
+.gnav-inner{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0 4px;row-gap:2px;scrollbar-width:none}
+.gnav-divider{display:inline-block;width:1px;height:18px;background:var(--bd);margin:0 6px;flex-shrink:0}
+.gnav-group{display:inline-flex;align-items:center;gap:0;flex-shrink:0}
+.gnav-group-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-right:6px;flex-shrink:0;padding:3px 7px;border-radius:5px;line-height:1}
+.gnav-group-label.gl-track{background:var(--teal-bg);color:var(--teal-t)}
+.gnav-group-label.gl-browse{background:var(--blue-bg);color:var(--blue)}
+.gnav-group-label.gl-write{background:var(--amber-bg);color:var(--amber-t)}
+.gnav-home{font-size:12px;font-weight:600;color:var(--t1);text-decoration:none;padding:10px 9px 10px 0;white-space:nowrap;border-right:.5px solid var(--bd);margin-right:2px;flex-shrink:0}
+.gnav-home:hover{color:var(--teal-t)}
+.gnav-link{font-size:11px;font-weight:500;color:var(--t3);text-decoration:none;padding:10px 7px;white-space:nowrap;border-bottom:2px solid transparent;transition:color .12s,border-color .12s;flex-shrink:0}
+.gnav-link:hover{color:var(--t1)}
+.gnav-link.active{color:var(--teal-t);border-bottom-color:var(--teal)}
+.gnav-toggle{flex-shrink:0;width:34px;height:34px;margin-left:8px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--bd);background:var(--bg2);color:var(--t2);cursor:pointer;border-radius:6px;font-family:var(--fn);font-size:14px;line-height:1;transition:background .12s,border-color .12s}
+.gnav-toggle:hover{background:var(--bg3);border-color:var(--bds);color:var(--t1)}
+html.dark .gnav-toggle{background:var(--bg2);border-color:var(--bd);color:var(--t1)}
+
+.page-header{padding:1.5rem 0 1.1rem;border-bottom:.5px solid var(--bd);margin-bottom:1.5rem}
+.page-header-eyebrow{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-t);margin-bottom:.25rem}
+.page-header-title{font-size:24px;font-weight:700;color:var(--t1);line-height:1.2;letter-spacing:-.02em;margin-bottom:.2rem}
+.page-header-sub{font-size:13px;color:var(--t2);line-height:1.5}
+/* Remove old top-nav bubble gap */
+.top-nav{display:none!important}
+
+.s-updated{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#4c3bc4;color:#fff;
+  font-size:11px;font-weight:700;
+  padding:3px 10px;border-radius:999px;
+  letter-spacing:.03em;white-space:nowrap;
+  vertical-align:middle;margin-left:0
+}
+html.dark .s-updated{background:#6d5fe0;color:#fff}
+
+html.dark .s-updated{background:#2d2563;color:#b5abfa}
+
+.page{max-width:720px;margin:0 auto;padding:0 1rem}
+/* ensure page-header gets left padding from .page */
+.page-header{padding:1.5rem 0 1.1rem;border-bottom:.5px solid var(--bd);margin-bottom:1.5rem}
+
+/* Layout */
+body{padding:0 0 2rem;margin:0}
+.page{max-width:720px;margin:0 auto;padding:0 1rem}
+.page-header{padding:1.5rem 0 1.1rem;border-bottom:.5px solid var(--bd);margin-bottom:1.5rem}
+
+/* ════════════════════════════════════
+   THEME VARIABLES — What's Next for Erin
+   Light: Medium grey scale palette
+   Dark: Forest green palette
+   ════════════════════════════════════ */
+
+/* Light mode base */
+:root {
+  /* Grey scale (Medium palette) */
+  --bg:   #FAFAFA;   /* grey-50  — card white */
+  --bg2:  #F5F5F5;   /* grey-100 — subtle areas */
+  --bg3:  #EEEEEE;   /* grey-200 — page background */
+  --t1:   #212121;   /* grey-900 — primary text */
+  --t2:   #424242;   /* grey-800 — secondary text */
+  --t3:   #757575;   /* grey-600 — muted text */
+  --bd:   rgba(0,0,0,0.10);
+  --bds:  rgba(0,0,0,0.22);
+  /* Shared */
+  --r1:8px;--r2:12px;
+  --fn:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  /* Green accents (from original palette) */
+  --teal:#4e9836;--teal-bg:#eaf3e5;--teal-t:#3c7b20;
+  --blue:#3a7878;--blue-bg:#e5f0f0;
+  --amber:#8a6f00;--amber-bg:#f5f0db;--amber-t:#6b5500;
+  --red:#993c1d;--red-bg:#faece7;--red-t:#993c1d;
+  --purple-bg:#e8e4fe;--purple-t:#4c3bc4;
+}
+
+/* System dark mode (auto) */
+@media(prefers-color-scheme:dark) {
+  :root {
+    --bg:#1c2018;--bg2:#242b1e;--bg3:#18201a;
+    --t1:#f0ede0;--t2:#c0c4a8;--t3:#9dc8c8;
+    --bd:rgba(157,200,200,0.15);--bds:rgba(157,200,200,0.28);
+    --teal-bg:#2a3d22;--teal-t:#8fc87a;
+    --blue-bg:#1e3535;--amber-bg:#3d3510;--amber-t:#d4c47a;
+    --red-bg:#3d1510;--red-t:#f5a490;
+    --purple-bg:#2d2563;--purple-t:#b5abfa;
+  }
+}
+
+/* Manual toggle — must come LAST so it overrides both :root and @media */
+html.dark {
+  --bg:#1c2018;--bg2:#242b1e;--bg3:#18201a;
+  --t1:#f0ede0;--t2:#c0c4a8;--t3:#9dc8c8;
+  --bd:rgba(157,200,200,0.15);--bds:rgba(157,200,200,0.28);
+  --teal-bg:#2a3d22;--teal-t:#8fc87a;
+  --blue-bg:#1e3535;--amber-bg:#3d3510;--amber-t:#d4c47a;
+  --red-bg:#3d1510;--red-t:#f5a490;
+  --purple-bg:#2d2563;--purple-t:#b5abfa;
+}
+/* Override light mode when .dark is set (belt AND suspenders) */
+html:not(.dark) {
+  --bg:#FAFAFA;--bg2:#F5F5F5;--bg3:#EEEEEE;
+  --t1:#212121;--t2:#424242;--t3:#757575;
+  --bd:rgba(0,0,0,0.10);--bds:rgba(0,0,0,0.22);
+  --teal-bg:#eaf3e5;--teal-t:#3c7b20;
+  --blue-bg:#e5f0f0;--amber-bg:#f5f0db;--amber-t:#6b5500;
+  --red-bg:#faece7;--red-t:#993c1d;
+  --purple-bg:#e8e4fe;--purple-t:#4c3bc4;
+}
+/* Rich detail panel */
+.item-detail{display:none;margin-top:.75rem;padding:.85rem 1rem;background:var(--bg2);border-radius:var(--r1);border:.5px solid var(--bd)}
+.item-detail.open{display:block}
+.id-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--teal-bg);color:var(--teal-t);margin-bottom:.55rem}
+.id-section-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin:.6rem 0 .2rem}
+.id-body{font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:.5rem}
+.id-meta-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:.5rem}
+.id-meta-item{font-size:12px;color:var(--t2)}
+.id-meta-item strong{color:var(--t1);font-weight:600}
+.id-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.5rem}
+.id-pill{font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px;background:var(--teal-bg);color:var(--teal-t)}
+.id-link{display:inline-block;font-size:12px;font-weight:500;color:var(--teal-t);text-decoration:none;margin-top:.4rem;padding:4px 10px;border:1px solid var(--teal);border-radius:6px}
+.id-link-primary{background:var(--teal);color:#fff;font-weight:600}
+.id-link-primary:hover{opacity:.88}
+.id-link:hover{background:var(--teal-bg)}
+
+
+@media print {
+  .global-nav, .gnav-inner, button, .add-btn, .del-btn, .save-btn,
+  .mode-tabs, .list-filters, .browse-actions, .item-actions, .note-area,
+  .saved-flash, .app-row, .app-actions, footer, .footer { display:none!important }
+  body { background:#fff!important; color:#000!important }
+  .page { max-width:100%!important; padding:0!important }
+  .page-header { border-bottom:1px solid #ccc!important }
+  .item-card, .app-card, .prof-card, .browse-card { 
+    border:1px solid #ccc!important; break-inside:avoid; margin-bottom:.5rem!important }
+}
+
+</style>
+
+<script>
+(function(){
+  var saved=localStorage.getItem('erin_theme');
+  var prefersDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;
+  if(saved==='dark'||(!saved&&prefersDark)) document.documentElement.classList.add('dark');
+  function upBtn(){var b=document.getElementById('theme-toggle');if(b)b.innerHTML=document.documentElement.classList.contains('dark')?'&#9728;':'&#127769;';}
+  document.addEventListener('DOMContentLoaded',upBtn);
+  window.__toggleTheme=function(){var d=document.documentElement.classList.toggle('dark');localStorage.setItem('erin_theme',d?'dark':'light');upBtn();};
+})();
+</script>
+</head>
+<body>
+
+<!-- GLOBAL NAV -->
+<nav class="global-nav">
+  <div class="gnav-wrap">
+    <div class="gnav-inner">
+      <a href="index.html" class="gnav-home">&#127968; Home</a>
+      <span class="gnav-divider"></span>
+      <div class="gnav-group">
+        <span class="gnav-group-label gl-track">Track</span>
+        <a href="erin_mylist.html" class="gnav-link active">&#9733; My List</a>
+        <a href="erin_timeline.html" class="gnav-link">&#128197; Timeline</a>
+        <a href="erin_applications.html" class="gnav-link">&#128196; Apps</a>
+        <a href="erin_proftracker.html" class="gnav-link">&#128100; Profs</a>
+        <a href="erin_reftracker.html" class="gnav-link">&#128393; Refs</a>
+      </div>
+      <span class="gnav-divider"></span>
+      <div class="gnav-group">
+        <span class="gnav-group-label gl-browse">Browse</span>
+        <a href="erin_programs.html" class="gnav-link">&#127979; Programs</a>
+        <a href="erin_internships.html" class="gnav-link">&#128203; Internships</a>
+        <a href="erin_jobs.html" class="gnav-link">&#128188; Jobs</a>
+        <a href="erin_service.html" class="gnav-link">&#127807; Service</a>
+      </div>
+      <span class="gnav-divider"></span>
+      <div class="gnav-group">
+        <span class="gnav-group-label gl-write">Write</span>
+        <a href="erin_writing_samples.html" class="gnav-link">&#9997; Writing</a>
+        <a href="erin_outreach.html" class="gnav-link">&#128203; Outreach</a>
+      </div>
+    </div>
+    <button class="gnav-toggle" id="theme-toggle" onclick="__toggleTheme()" title="Toggle dark/light mode">&#127769;</button>
+  </div>
+</nav>
+
+<div class="page">
+
+
+<div class="page-header">
+  <div class="page-header-eyebrow">What's Next for Erin</div>
+  <div class="page-header-title">My Opportunity List</div>
+  <div class="page-header-sub">Your saved programs, internships, jobs, and service positions</div>
+</div>
+
+<div class="top-nav">
+  <span class="pg-title">My Opportunity List</span>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+  <div></div>
+  <button onclick="window.print()" style="font-size:12px;font-weight:500;padding:5px 12px;border:.5px solid var(--bds);border-radius:6px;background:var(--bg2);color:var(--t2);cursor:pointer;font-family:var(--fn);display:flex;align-items:center;gap:5px">&#128438; Print / Export</button>
+</div>
+<div class="mode-tabs">
+  <button class="mode-tab active" id="tab-list" onclick="setMode('list')">&#9733; My List <span id="tab-count"></span></button>
+  <button class="mode-tab" id="tab-browse" onclick="setMode('browse')">&#128269; Browse All 87 Opportunities</button>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.25rem">
+  <a href="erin_timeline.html" style="flex:1;min-width:160px;display:flex;align-items:center;gap:.6rem;background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);padding:.75rem 1rem;text-decoration:none;color:var(--t1)">
+    <span style="font-size:18px">&#128197;</span>
+    <div><div style="font-size:13px;font-weight:500">Deadline Timeline</div><div style="font-size:11px;color:var(--t3)">Dates from saved items</div></div>
+  </a>
+  <a href="erin_proftracker.html" style="flex:1;min-width:160px;display:flex;align-items:center;gap:.6rem;background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);padding:.75rem 1rem;text-decoration:none;color:var(--t1)">
+    <span style="font-size:18px">&#128100;</span>
+    <div><div style="font-size:13px;font-weight:500">Professor Contacts</div><div style="font-size:11px;color:var(--t3)">Track outreach status</div></div>
+  </a>
+  <a href="erin_reftracker.html" style="flex:1;min-width:160px;display:flex;align-items:center;gap:.6rem;background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r2);padding:.75rem 1rem;text-decoration:none;color:var(--t1)">
+    <span style="font-size:18px">&#128393;</span>
+    <div><div style="font-size:13px;font-weight:500">Reference Letters</div><div style="font-size:11px;color:var(--t3)">Track recommenders</div></div>
+  </a>
+</div>
+
+<div id="mode-list">
+  <div class="hero">
+    <div>
+      <div class="hero-title">My saved opportunities</div>
+      <div id="hero-sub" style="font-size:13px;color:var(--t2)">Loading&#8230;</div>
+    </div>
+    <div class="hero-right">
+      <span class="count-pill" id="count-pill">0 saved</span>
+      <span class="sync-status" id="ss">Synced &#10003;</span>
+    </div>
+  </div>
+  <div class="filter-row" id="list-filters"></div>
+  <div id="list-body"></div>
+</div>
+
+<div id="mode-browse" style="display:none">
+  <div class="tip">&#128269;&nbsp; All 74 opportunities across all 8 pages. Click <strong>Save to My List</strong> on anything that interests you &#8212; it is snapshotted with full details and stays permanently even if source pages change. Items marked <span class="status-badge s-updated" style="display:inline-block;font-size:10px;padding:1px 6px;border-radius:999px;background:#e8e4fe;color:#4c3bc4">&#10024; New &mdash; May 16, 2026</span> were added or updated in the latest sweep.</div>
+  <input class="search-input" id="bs" placeholder="Search title, org, type, deadline&#8230;" oninput="renderBrowse()">
+  <div class="filter-row" id="browse-filters"></div>
+  <div id="browse-body"></div>
+</div>
+
+<div style="margin-top:1.5rem;padding-top:1rem;border-top:.5px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem">
+  <span style="font-size:12px;color:var(--t3)">Cloud sync device setting</span>
+  <button id="primary-toggle" onclick="setPrimary(!isPrimary())" style="font-size:12px;font-weight:500;padding:5px 14px;border-radius:999px;border:1px solid var(--bds);cursor:pointer;font-family:var(--fn);transition:all .15s">Set as primary device</button>
+</div>
+<p class="footer">Resource guide compiled May 2026. Verify all details directly before applying.<br><br><a href="index.html">&#8592; Back to home</a></p>
+</div>
+
+<script>
+
+var ALL = [{"title":"Colorado State University","org":"Fort Collins, CO \u00b7 Ecosystem Science & Sustainability / Ecology","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"Dec 1, 2025 (passed) \u2014 next cycle ~Dec 1, 2026","start":"","body":"Active MS/PhD position in the Landscape Modeling Lab (Aug 2026 start) on remote sensing of wetland dynamics in interior and coastal systems, wetland conversion and loss in the Prairie Pothole Region. Fieldwork includes vegetation, water, and near-surface remote sensing data. Also the Water, Envir...","badge":"Deadline passed \u2014 reapply Fall 2027","pills":[],"id":"item-000","url":"erin_programs_next.html","url_label":"Open Graduate Programs \u2014 Next Cycle"},{"title":"Louisiana State University \u2014 WABL","org":"Baton Rouge, LA \u00b7 Dept. of Oceanography & Coastal Sciences","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"February 15 (passed) \u2014 next cycle Feb 15, 2027","start":"","body":"Dr. John White's Wetland and Aquatic Biogeochemistry Laboratory (WABL) has a PhD assistantship available for Fall 2026 focused on coastal wetland systems. MS minimum stipend $23,000/yr; PhD $31,000/yr. Research spans freshwater and coastal wetlands, lakes, estuaries, nutrient cycling, and contami...","badge":"Deadline passed \u2014 reapply Feb 2027","pills":[],"id":"item-001","url":"erin_programs_next.html","url_label":"Open Graduate Programs \u2014 Next Cycle"},{"title":"University of Georgia \u2014 Savannah River Ecology Lab","org":"Athens, GA / Aiken, SC \u00b7 Odum School of Ecology","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"","start":"","body":"SREL is a long-established field station in Aiken, SC with strong aquatic and wetland ecology research. MS opportunities in terrestrial-aquatic linkages and contaminant ecology. Competitive stipend and tuition waiver; contact faculty directly to confirm current openings.","badge":"Good fit","pills":[],"id":"item-002","url":"https://www.srel.uga.edu/","url_label":"\ud83d\udd0d SREL website","extbody":"About SREL The Savannah River Ecology Laboratory has operated for over 70 years as a field station near Aiken, SC. Research spans aquatic ecology, herpetology, radioecology, and ecosystem science. Graduate students enroll in UGA's Odum School of Ecology or related departments while conducting research at the SREL facility. Research areas matching Erin's background Contaminant biogeochemistry and trace metal movement through wetland systems; aquatic-terrestrial linkages in southeastern ecosystems","contact":"Browse faculty profiles at"},{"title":"University of Southern Mississippi \u2014 Gulf Coast Research Lab","org":"Hattiesburg/Ocean Springs, MS \u00b7 Marine Science","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"","start":"","body":"Gulf Coast Research Lab has MS assistantships in Marine Science including oyster recruitment and coastal restoration research in Mississippi Sound. Good match for field sampling and aquatic ecology background. Verify current openings directly with GCRL faculty.","badge":"Solid option","pills":[],"id":"item-003","url":"https://www.usm.edu/gcrl/","url_label":"&#128269; USM GCRL website","url2":"https://www.usm.edu/gcrl/faculty-staff.php","url2_label":"usm.edu/gcrl/faculty-staff"},{"title":"University of Wyoming \u2014 Haub School","org":"Laramie, WY \u00b7 Environment, Natural Resources & Society","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"March 1 (passed) \u2014 next cycle ~March 1, 2027","start":"","body":"R1 university with robust wildlife ecology and natural resources programs. MS assistantship value ~$27,500 total (stipend + tuition + health insurance). Wyoming Cooperative Fish & Wildlife Research Unit has active funded positions. Priority deadline: March 1.","badge":"Deadline passed \u2014 reapply March 2027","pills":[],"id":"item-004","url":"erin_programs_next.html","url_label":"Open Graduate Programs \u2014 Next Cycle"},{"title":"NC State University \u2014 Hurricane Helene Forest Recovery","org":"Raleigh, NC \u00b7 Dept. of Forestry & Environmental Resources","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"Financial aid deadline passed (Jan 31); admission deadline June 25, 2026","start":"","body":"Actively recruiting a funded MS student (preferred start May 2026) to study how forest structure, composition, and function are affected by Hurricane Helene in western NC oak-hickory forests. Uses vegetation and wildlife inventories to evaluate and aid forest recovery. Co-advised by Drs. Jodi Forrester and Chris Moorman (NC State) and Dr. Tara Keyser (USDA Forest Service). This is a near-perfect match for Erin's background and her Pigeon River research.","badge":"Admission open until June 25","pills":[],"id":"item-005","url":"erin_programs.html","url_label":"Open Funded Graduate Programs"},{"title":"Clemson University \u2014 Elmore Lab, Bird Response to Helene","org":"Clemson, SC \u00b7 Dept. of Forestry & Environmental Conservation","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"","start":"","body":"The Elmore Lab at Clemson's Forestry &amp; Environmental Conservation dept. was recruiting MS and PhD students for a Hurricane Helene bird ecology project. MS candidate to coordinate nest monitoring studying how priority bird species (Kentucky Warbler, Golden-winged Warbler, Cerulean Warbler, Swainson's Warbler, Ruffed Grouse) respond to hurricane damage. MS stipend $30k/yr; PhD $35k/yr. Field work in Pisgah National Forest. Verify if still open.","badge":"Good fit","pills":[],"id":"item-006","url":"https://www.clemson.edu/cafls/academics/graduate/forest-resources.html","url_label":"&#128269; Clemson FEC grad programs"},{"title":"Auburn University \u2014 Alabama CFWRU","org":"Auburn, AL \u00b7 Biological Sciences / Natural Resources","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"","start":"","body":"The Alabama Cooperative Fish & Wildlife Research Unit at Auburn has funded MS assistantships in wildlife survey design, fish ecology, and invasive species management. Strong southern field ecology tradition. Good match for wildlife management planning and mammalogy background.","badge":"Good fit","pills":[],"id":"item-007","url":"https://www.auburn.edu/cosam/departments/biology/research/alabamacfwru/","url_label":"&#128269; Auburn ACFWRU website"},{"title":"Mississippi State University \u2014 Forest & Wildlife Research Center","org":"Starkville, MS \u00b7 Dept. of Wildlife, Fisheries & Aquaculture","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"","start":"","body":"The College of Forest Resources at MSU has active funded MS positions in fire ecology, forest hydrology, and wildlife. The Forest Ecology Lab (Dr. Ashley Schulz) periodically recruits MS students for southeastern forest ecology and restoration. Research assistantships typically include tuition waiver, stipend, and health insurance.","badge":"Good fit","pills":[],"id":"item-008","url":"erin_programs.html","url_label":"Open Funded Graduate Programs"},{"title":"Colorado State University","org":"Fort Collins, CO \u00b7 Multiple departments","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"","start":"","body":"The single strongest overall match. Active MS/PhD openings in wetland remote sensing (Landscape Modeling Lab, Aug 2026) and water governance research (Water, Environment & Society Group). 40\u201350 active assistantships per semester across Ecosystem Science, Ecology, and related departments. Full fee...","badge":"Top recommendation","pills":[],"id":"item-009","url":"https://warnercnr.colostate.edu/ess/graduate-programs/graduate-research-opportunities/","url_label":"&#128269; CSU active grad opportunities page","url2":"https://ecology.colostate.edu/assistantships/","url2_label":"&#128269; CSU Ecology assistantships"},{"title":"University of Wyoming \u2014 Wildfire & Forest Resilience","org":"Laramie, WY \u00b7 Forest Forensics & Dendroecology Lab","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"Fall 2026 start \u2014 verify current availability with lab","start":"","body":"Fully funded MS for Fall 2026 \u2014 $23,000 stipend + full tuition waiver + health insurance. Focus: wildfire risk, forest recovery, LiDAR remote sensing and deep learning models. Ideal for GIS-skilled candidates. Verify current availability \u2014 position was posted Fall 2025.","badge":"Verify \u2014 contact lab directly","pills":[],"id":"item-010","url":"https://www.uwyo.edu/haub/","url_label":"\ud83d\udd0d UW Haub School"},{"title":"CU Boulder \u2014 INSTAAR / Environmental Studies","org":"Boulder, CO","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"","start":"","body":"Research and teaching assistantships include tuition remission and health insurance. INSTAAR (Institute of Arctic and Alpine Research) is a strong match for water quality, biogeochemistry, and landscape ecology research. Competitive but prestigious. Best approach: direct faculty contact first.","badge":"Good fit","pills":[],"id":"item-011","url":"https://www.uwyo.edu/haub/","url_label":"\ud83d\udd0d UW Haub School","contact":"Start at the"},{"title":"Mississippi State University \u2014 Geosystems Research Institute","org":"Starkville, MS \u00b7 GIS & Health Geography","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"","start":"","body":"The College of Forest Resources at MSU has active funded MS positions in fire ecology, forest hydrology, and wildlife. The Forest Ecology Lab (Dr. Ashley Schulz) periodically recruits MS students for southeastern forest ecology and restoration. Research assistantships typically include tuition waiver, stipend, and health insurance.","badge":"Good fit","pills":[],"id":"item-012","url":"https://www.cfr.msstate.edu/","url_label":"\ud83d\udd0d MSU College of Forest Resources","extbody":"About the program MSU's College of Forest Resources houses the Department of Wildlife, Fisheries and Aquaculture and the Department of Forestry under one roof, providing cross-disciplinary MS and PhD opportunities. The Forest and Wildlife Research Center (FWRC) is a state-funded research institute supporting graduate student projects. Key process note Contact faculty before applying. MSU's funding model allocates assistantships to faculty from research grants. Browse the CFR job board and facult","contact":"Check the"},{"title":"University of Montana \u2014 Environmental Studies","org":"Missoula, MT \u00b7 WICHE eligible for Colorado residents","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"","start":"","body":"Colorado residents qualify for 150% of Montana in-state tuition via WICHE (Western Regional Graduate Program). Teaching assistantships with full tuition waiver. Strong environmental justice and policy MS \u2014 great fit for Erin's Appalachian justice coursework.","badge":"WICHE discount","pills":[],"id":"item-013","url":"https://www.gri.msstate.edu/","url_label":"\ud83d\udd0d MSU GRI website","contact":"Browse INSTAAR faculty at"},{"title":"NC State University \u2014 Hurricane Helene Forest Recovery","org":"Raleigh, NC \u00b7 Forestry & Environmental Resources","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"Financial aid deadline passed (Jan 31); admission deadline June 25, 2026","start":"","body":"Actively recruiting a funded MS student (preferred start May 2026) to study how forest structure, composition, and function are affected by Hurricane Helene in western NC oak-hickory forests. Uses vegetation and wildlife inventories to evaluate and aid forest recovery. Co-advised by Drs. Jodi Forrester and Chris Moorman (NC State) and Dr. Tara Keyser (USDA Forest Service). This is a near-perfect match for Erin's background and her Pigeon River research.","badge":"Admission open until June 25","pills":[],"id":"item-014","url":"erin_programs.html","url_label":"Open Funded Graduate Programs"},{"title":"Mississippi State University \u2014 Forest Hydrology & Soils Lab","org":"Starkville, MS \u00b7 Dept. of Forestry","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"December 2025 deadline passed; position was for Jan 2026 start \u2014 watch for next NSF-FIRE opening","start":"","body":"Three-year funded MS research assistantship starting January 2026 in the Forest Hydrology and Soils Lab (Dr. Courtney Siegert). NSF-FIRE project investigating how back-to-back extreme weather events drive forest hydrology and flammability in the southeastern US. Fully funded: full tuition waiver ...","badge":"Deadline passed \u2014 watch for next opening","pills":[],"id":"item-015","url":"erin_programs_next.html","url_label":"Open Graduate Programs \u2014 Next Cycle"},{"title":"Louisiana State University \u2014 WABL & Coastal Sciences","org":"Baton Rouge, LA \u00b7 Dept. of Oceanography & Coastal Sciences","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"February 15 (passed) \u2014 next cycle Feb 15, 2027","start":"","body":"Dr. John White's WABL lab has a PhD assistantship available for Fall 2026 in coastal wetland biogeochemistry. Also, Dr. Kaelyn Fogelman's new lab has a funded MS/PhD position on crayfish & unionid mussels responding to environmental stress (Jan or May 2026). MS minimum stipend $23,000\u2013$28,000/yr....","badge":"Deadline passed \u2014 reapply Feb 2027","pills":[],"id":"item-016","url":"erin_programs_next.html","url_label":"Open Graduate Programs \u2014 Next Cycle"},{"title":"Auburn University \u2014 ACFWRU","org":"Auburn, AL \u00b7 Biological Sciences / Natural Resources","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"","start":"","body":"Alabama Cooperative Fish & Wildlife Research Unit has funded MS positions in wildlife surveys and fish ecology. Good match for wildlife management planning and mammalogy field skills. Contact unit leaders directly to confirm current openings.","badge":"Solid option","pills":[],"id":"item-017","url":"https://www.auburn.edu/cosam/departments/biology/research/alabamacfwru/","url_label":"\ud83d\udd0d Auburn ACFWRU website","contact":"Contact:"},{"title":"University of Georgia \u2014 Odum School / SREL","org":"Athens, GA / Aiken, SC","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"","start":"","body":"UGA's Odum School of Ecology and Savannah River Ecology Lab both offer competitive funded MS positions. Research in aquatic ecology, contaminant biogeochemistry, and wetland systems aligns strongly with Erin's coursework. Strong institutional reputation. Contact faculty directly.","badge":"Good fit","pills":[],"id":"item-018","url":"https://www.srel.uga.edu/","url_label":"\ud83d\udd0d SREL website","extbody":"About SREL The Savannah River Ecology Laboratory has operated for over 70 years as a field station near Aiken, SC. Research spans aquatic ecology, herpetology, radioecology, and ecosystem science. Graduate students enroll in UGA's Odum School of Ecology or related departments while conducting research at the SREL facility. Research areas matching Erin's background Contaminant biogeochemistry and trace metal movement through wetland systems; aquatic-terrestrial linkages in southeastern ecosystems","contact":"Browse faculty profiles at"},{"title":"USGS South Atlantic Water Science Center (SAWSC) \u2014 Student Corps","org":"US Geological Survey \u00b7 North Carolina, South Carolina & Georgia","type":"Internship","cat":"Internships","src":"erin_internships.html","src_label":"Internships","deadline":"Rolling \u2014 posted year-round on USAJobs","start":"","body":"USGS SAWSC offers part-time and full-time entry-level paid positions in NC, SC, and GA specifically for current students and recent graduates. Focused on hands-on fieldwork in water resources, hydrology, aquatic biology, and environmental science in the Southeast US \u2014 a near-perfect geographic an...","badge":"Rolling","pills":["Water quality monitoring","Hydrology fieldwork","Environmental science","SE United States"],"id":"item-019","url":"https://www.usajobs.gov/Search/Results?a=USGS&hp=student","pay":"Paid (federal GS scale)","location":"NC, SC, GA offices","url_label":"\ud83d\udd0d SAWSC Student Corps page","url2":"mailto:gs-sawscsc@usgs.gov","url2_label":"\u2709 gs-sawscsc@usgs.gov \u2014 contact for upcoming vacancies","extbody":"Why this is a top match SAWSC is the USGS Water Science Center for NC, SC, and GA \u2014 exactly where Erin studied and conducted her Hurricane Helene research. SAWSC technicians collect streamflow data, water quality samples, and biological specimens from rivers, streams, and aquifers across the region. Erin's GEOL 423 (Contaminated Rivers), ENVH 310 (Water Quality), and field sampling experience from the Pigeon River project are directly applicable. What hydrologic technicians do Operate and mainta"},{"title":"EPA Office of Water \u2014 Student Volunteer Internship","org":"US Environmental Protection Agency \u00b7 Washington, DC (Office of Wetlands, Oceans & Watersheds)","type":"Internship","cat":"Internships","src":"erin_internships.html","src_label":"Internships","deadline":"Rolling; apply well in advance of desired term","start":"","body":"EPA's Office of Water offers unpaid student internships in several divisions. The Office of Wetlands, Oceans and Watersheds (OWOW) is a direct match \u2014 it uses science to assess water quality, protect wetlands, fund restoration, and apply watershed approaches. The Office of Wastewater Management a...","badge":"Verify status","pills":["Wetlands policy","Water quality","GIS & data analysis","Environmental justice"],"id":"item-020","url":"https://www.epa.gov/careers/student-volunteer-internships-20252026-office-water-washington-dc","pay":"Unpaid (volunteer)","location":"Washington, DC","url_label":"\ud83d\udd0d EPA Office of Water internship listing","url2":"https://www.epa.gov/careers","url2_label":"\ud83d\udd0d EPA Careers page"},{"title":"USFWS Pathways Internship \u2014 Biological Science Student Trainee","org":"US Fish & Wildlife Service \u00b7 Multiple National Wildlife Refuges & field offices","type":"Internship","cat":"Internships","src":"erin_internships.html","src_label":"Internships","deadline":"Rolling; postings vary by position","start":"","body":"USFWS Pathways Internships are paid federal positions that can convert to permanent federal employment. \"Biological Science Student Trainee\" is the primary series (GS-0404). Duties include wildlife surveys, wetland management, habitat assessments, and species monitoring. Pro tip from USFWS: wetla...","badge":"Rolling","pills":["Wildlife surveys","Wetland management","Species monitoring","Federal hiring pathway"],"id":"item-021","url":"https://www.usajobs.gov/Search/Results?hp=student&a=FWS&k=biological+science","pay":"GS-03 to GS-05 scale (~$15\u2013$22/hr depending on location/grade)"},{"title":"USGS Pathways Recent Graduate Program \u2014 Hydrologist / Physical Scientist","org":"US Geological Survey \u00b7 Various Water Science Centers nationwide","type":"Internship","cat":"Internships","src":"erin_internships.html","src_label":"Internships","deadline":"Posted year-round on USAJobs; apply when posted","start":"","body":"The USGS Recent Graduate Program provides 1\u20132 year developmental positions for graduates within the last 2 years. Can convert to permanent federal employment. USGS Water Science Centers are distributed across every state. Positions in hydrology, water quality, and biological science are the stron...","badge":"Rolling","pills":["Hydrology","Water resources","GIS & data analysis","Federal career pathway"],"id":"item-022","url":"https://www.usajobs.gov/Search/Results?hp=rg&a=USGS"},{"title":"Environmental Technician Internship \u2014 Summer 2026","org":"Wetland Studies and Solutions, Inc. (WSSI) \u00b7 Gainesville, VA \u00b7 Millersville, MD \u00b7 Richmond, VA","type":"Internship","cat":"Internships","src":"erin_internships.html","src_label":"Internships","deadline":"","start":"","body":"WSSI's Summer 2026 internship program is now closed after receiving a strong volume of applications. Watch WSSI careers (wetlands.com/careers) for fall 2026 or summer 2027 openings. WSSI is an award-winning wetland and environmental consulting firm \u2014 Raleigh, NC; Gainesville, VA; Millersville, MD offices. Interns gain hands-on experience from erosion control to wildlife and insect monitoring. WSSI also has a permanent Environmental Compliance Technician role open in Raleigh.","badge":"Closed \u2014 Summer 2026 filled","pills":["Wetland delineation","Wildlife monitoring","Erosion control","Field site visits"],"id":"item-023","url":"https://www.wetlands.com/careers/current-openings/"},{"title":"Natural Resources Internship \u2014 Ecology Team","org":"ERO Resources Corporation \u00b7 Lakewood, CO","type":"Internship","cat":"Internships","src":"erin_internships.html","src_label":"Internships","deadline":"","start":"","body":"ERO Resources is a Denver-area environmental consulting firm seeking ecology interns to assist with natural resource assessments, wetland delineations, and related field work. Duties include writing natural resource assessments, wetland delineations, and field surveys. Good match for Erin's GEOL ...","badge":"Verify status","pills":["Natural resource assessments","Wetland delineation","Colorado-based","Consulting"],"id":"item-024","url":"https://www.eroresources.com/careers","url_label":"&#128269; ERO Resources careers page"},{"title":"Natural Resources Intern \u2014 Stream Surveying & Wetland Delineation","org":"KCI Technologies, Inc. \u00b7 Nashville, TN","type":"Internship","cat":"Internships","src":"erin_internships.html","src_label":"Internships","deadline":"","start":"","body":"KCI Technologies was seeking a natural resources intern in Nashville, TN to assist with vegetative monitoring, stream surveying, identification and delineation of waters in Tennessee and surrounding states. Strong match for Erin's wetlands and water quality background with Appalachian-adjacent ge...","badge":"Verify status","pills":["Stream surveying","Wetland delineation","Vegetative monitoring","Tennessee / Southeast"],"id":"item-025","url":"https://www.eroresources.com/careers","location":"Lakewood, CO (Denver area)","url_label":"\ud83d\udd0d ERO Resources careers page","url2":"https://www.google.com/search?q=ERO+Resources+Corporation+natural+resources+ecology+internship+2026","url2_label":"\ud83d\udd0d Search ERO Resources internship 2026"},{"title":"Science Intern \u2014 Fall 2026","org":"Earthjustice \u00b7 Washington, DC Regional Office (remote/hybrid option)","type":"Internship","cat":"Internships \u2014 Next Cycle","src":"erin_internships_next.html","src_label":"Internships \u2014 Next Cycle","deadline":"May 15, 2026 at 5pm PT \u2014 CLOSED","start":"Fall 2026; offers by July 8","body":"Earthjustice's DC office advocates on wetlands, water pollution, clean air, and climate. The fall 2026 science intern researches scientific questions to support advocacy and litigation before federal agencies and courts. Requires coursework in environmental health, epidemiology, or toxicology \u2014 E...","badge":"Deadline passed May 15, 2026","pills":["Environmental health science","Wetlands & water policy","Toxicology","Environmental justice"],"id":"item-026","url":"erin_internships_next.html","url_label":"Open Internships \u2014 Next Cycle"},{"title":"Research Internship \u2014 Wetland Ecology","org":"The Wetlands Institute \u00b7 Stone Harbor, NJ","type":"Internship","cat":"Internships","src":"erin_internships.html","src_label":"Internships","deadline":"Summer 2026 \u2014 verify directly with Wetlands Institute (wetlandsinstitute.org)","start":"","body":"The Wetlands Institute in Stone Harbor, NJ has summer 2026 internships available now. Research interns complete field surveys and studies under Science Staff supervision, including bird monitoring, nesting surveys, species counts, and GIS mapping. Strong match for Erin's wildlife survey skills, G...","badge":"Verify \u2014 may be filled","pills":["Wetland ecology field research","Bird & wildlife surveys","GIS mapping","Coastal wetlands"],"id":"item-027","url":"https://wetlandsinstitute.org/education/internship-opportunities/","url_label":"&#128269; Wetlands Institute internship applications"},{"title":"Research Internship \u2014 Wetland Ecology & Water Quality","org":"Jug Bay Wetlands Sanctuary \u00b7 Lothian, MD (Anne Arundel County)","type":"Internship","cat":"Internships","src":"erin_internships.html","src_label":"Internships","deadline":"","start":"","body":"Jug Bay's 2026 research internship included a project directly matching Erin's skills: studying beaver dam impacts on stream water quality \u2014 field work and data analysis on vegetation, water quality, and sedimentation in old and new beaver dams. Mentored by Dr. Patricia Delgado (JBWS/USGS) and Dr...","badge":"Reference \u2014 2026 deadline passed","pills":["Wetland ecology","Beaver dam water quality","Field research design","Mentor: USGS Wetland Ecologist"],"id":"item-028","url":"https://wetlandsinstitute.org/education/internship-opportunities/","location":"Stone Harbor, NJ (Cape May County)","url_label":"\ud83d\udd0d Wetlands Institute internship applications"},{"title":"Hydrologic Technician / Environmental Science Technician","org":"USGS South Atlantic Water Science Center (SAWSC) \u00b7 NC, SC & GA offices","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","deadline":"Rolling \u2014 posted on USAJobs year-round","start":"","body":"USGS SAWSC offers full-time entry-level paid positions in NC, SC, and GA for recent graduates with environmental science, hydrology, or biological science backgrounds. Hydrologic Technicians operate stream gauges, collect water quality samples, conduct aquatic biological surveys, and analyze fiel...","badge":"Rolling","pills":["Water quality monitoring","Hydrology fieldwork","Streamflow measurement","SE United States"],"id":"item-029","url":"https://www.usajobs.gov/Search/Results?a=USGS&k=hydro+technician&Series=1316"},{"title":"Biological Science Technician (GS-0404)","org":"US Fish & Wildlife Service \u00b7 Southeast Region (Region 4) NWR offices","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","deadline":"Rolling; apply when posted","start":"","body":"USFWS Biological Science Technician positions (GS-0404 series) involve wildlife surveys, wetland management, habitat assessments, and species monitoring on National Wildlife Refuges. Region 4 covers NC, SC, GA, FL, AL, MS, TN, KY, AR \u2014 the region where Erin has direct field experience. Entry-leve...","badge":"Rolling","pills":["Wildlife surveys","Wetland management","Species monitoring","National Wildlife Refuges"],"id":"item-030","url":"https://www.usajobs.gov/Search/Results?a=FWS&k=biological+science+technician&Series=0404","pay":"GS-04 to GS-07 (~$33k\u2013$52k)","location":"Region 4 NWR offices, SE United States","benefits":"Full federal benefits","url_label":"\ud83d\udd0d USAJobs: USFWS Biological Science Technician","url2":"https://www.fws.gov/careers","url2_label":"\ud83d\udd0d USFWS Careers","extbody":"Coursework qualification note USFWS HR categorizes coursework by specific terms in the announcement. GEOL 455 (Wetlands) may not auto-qualify as \"aquatic science.\" Include a short cover letter paragraph: \"My coursework in GEOL 455 Wetlands covers wetland hydrology, soil chemistry indicators, and aquatic vegetation, and should qualify as aquatic science coursework for the 0404 series requirements.\" Best Region 4 NWR targets Pee Dee NWR (NC), Cape Romain NWR (SC), Piedmont NWR (GA), Santee NWR (SC"},{"title":"Environmental Science / Natural Resources Specialist","org":"US Army Corps of Engineers \u00b7 Wilmington District (NC/SC) or Savannah District (GA)","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","deadline":"","start":"","body":"The Army Corps of Engineers Wilmington District regulates wetlands under Section 404 of the Clean Water Act across NC and SC \u2014 the exact region and regulatory framework Erin studied in GEOL 455. Entry-level Natural Resource Specialist and Biologist positions process permit applications, conduct w...","badge":"Rolling","pills":["Wetland permitting & 404","Army Corps delineation","Regulatory compliance","Water resources"],"id":"item-031","url":"https://www.usajobs.gov/Search/Results?a=USACE&k=natural+resources+biologist+wetlands","url_label":"&#128269; USAJobs: Army Corps biologist/natural resources","url2":"https://www.sas.usace.army.mil/Careers/","url2_label":"&#128269; Savannah District careers"},{"title":"Environmental Specialist I \u2014 Water Quality or Wetlands","org":"NC Department of Environmental Quality (NC DEQ) \u00b7 Raleigh & regional offices, NC","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","deadline":"Posted on NC Office of State Human Resources (OSHR)","start":"","body":"NC DEQ's Division of Water Resources and Division of Water Quality hire Environmental Specialists with water quality, wetlands, and field science backgrounds. Entry-level Environmental Specialist I positions review wetland and stream impact permits (401 Water Quality Certifications), conduct fiel...","badge":"Rolling","pills":["Water quality monitoring","Wetland permitting","401/404 certification","Field inspections"],"id":"item-032","url":"https://www.governmentjobs.com/careers/northcarolina?keywords=environmental+specialist+water","pay":"$38,000\u2013$50,000 (NC state scale)","location":"Raleigh, Asheville, Wilmington, and regional offices","benefits":"State pension, health, leave","url_label":"\ud83d\udd0d NC DEQ Careers page","url2":"https://www.governmentjobs.com/careers/northcarolina?keywords=environmental+specialist+water","url2_label":"\ud83d\udd0d NC state job board \u2014 environmental specialist"},{"title":"Wildlife Biologist I / Wildlife Technician","org":"NC Wildlife Resources Commission (NCWRC) \u00b7 Statewide","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","deadline":"","start":"","body":"NC Wildlife Resources Commission hires wildlife biologists and technicians for population monitoring, habitat assessment, GIS analysis, and species management across NC. Strong match for Erin's NRM 479 (Mammalogy), NRM 330 (Wildlife Management), and GIS coursework. NCWRC also conducts significant...","badge":"Rolling","pills":["Wildlife surveys","Mammal population monitoring","GIS & spatial analysis","North Carolina"],"id":"item-033","url":"https://www.ncwildlife.org/About-Us/Careers","url_label":"&#128269; NCWRC Careers page"},{"title":"Environmental Compliance Technician","org":"Wetland Studies and Solutions, Inc. (WSSI) \u00b7 Raleigh, NC","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","deadline":"","start":"","body":"WSSI is actively recruiting an Environmental Compliance Technician for their Raleigh, NC team. Ideal candidates have a BS in Environmental Studies or related field and at least 1 year experience performing environmental compliance. Duties: SWPPP development, stormwater pollution prevention planni...","badge":"Open now","pills":["Environmental compliance","SWPPP development","Wetland coordination","Stormwater"],"id":"item-034","location":"Raleigh, NC","benefits":"401k, medical, dental, vision, life insurance, LEED Gold building","url":"https://www.wetlands.com/careers/current-openings/","url_label":"&#128269; WSSI current openings (apply here)"},{"title":"Staff Environmental Scientist / Environmental Scientist I","org":"ECS Federal, Terracon, Cardno, Stantec, WSP, Kimley-Horn \u00b7 Southeast & Colorado offices","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","deadline":"","start":"","body":"Environmental consulting firms hire Staff Environmental Scientists (sometimes called Environmental Scientist I or Junior Ecologist) with BS degrees and wetland/GIS/field skills. Duties include conducting wetland delineations, writing delineation reports, preparing permit applications, conducting ...","badge":"Rolling","pills":["Wetland delineation","Natural resource surveys","NEPA documentation","Report writing"],"id":"item-035","url":"https://www.ecsfederal.com/careers","url_label":"&#128269; ECS Federal Careers","extbody":"The \"1 year experience\" requirement is typical for compliance roles. AmeriCorps service (especially an environmental IP term) often qualifies. An inte | ECS Federal \u2014 large multi-disciplinary firm active in Carolinas and mid-Atlantic; strong wetland delineation practice. | Terracon \u2014 nationwide consulting; offices in Charlotte, Raleigh, and Colorado; environmental science and geotechnical focus. | Stantec \u2014 global firm; active coastal engineering internship (Summer 2026) in Austin; also NC and CO offices.","url2":"https://www.terracon.com/careers/","url2_label":"&#128269; Terracon Careers"},{"title":"Environmental Compliance Technician","org":"Davey Tree Expert Company \u00b7 Raleigh, NC","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","deadline":"","start":"","body":"Davey Tree has an Environmental Compliance Technician position open in Raleigh, NC. Pay range $18\u2013$26/hr ($37k\u2013$54k annualized). Environmental compliance technicians conduct field inspections, prepare compliance reports, and support environmental monitoring programs. Entry-level role suitable for...","badge":"Open now","pills":["Environmental compliance","Field inspections","Reporting","Raleigh area"],"id":"item-036","url":"https://www.wetlands.com/careers/current-openings/","url_label":"&#128269; WSSI current openings (apply here)"},{"title":"Conservation Scientist / GIS Analyst \u2014 Land Protection","org":"The Nature Conservancy (TNC) \u00b7 NC, SC, CO chapters","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","deadline":"","start":"","body":"TNC hires conservation scientists and GIS analysts for land protection, habitat assessment, and conservation planning. Their NC and SC programs focus on Appalachian forest and stream conservation \u2014 directly relevant to Erin's background. Colorado chapter works on water resources and working lands...","badge":"Rolling","pills":["GIS & spatial analysis","Conservation planning","Wetland & habitat assessment","Science communication"],"id":"item-037","url":"https://www.nature.org/en-us/about-us/careers/","url_label":"&#128269; TNC Careers page","url2":"https://appalachian.org/about/careers/","url2_label":"appalachian.org/about/careers"},{"title":"BLM Wetlands & Wildlife Technician \u2014 Individual Placement","org":"Southwest Conservation Corps / Bureau of Land Management \u00b7 San Luis Valley Field Office \u00b7 Monte Vista, CO","type":"Service / Corps","cat":"Service & Fellowships","src":"erin_service.html","src_label":"Service & Fellowships","deadline":"Active \u2014 posted May 2026; apply as soon as possible","start":"","body":"CONFIRMED ACTIVE for 2026 cycle \u2014 posted approximately 3 weeks ago. This AmeriCorps IP partners with the BLM San Luis Valley Field Office in southern Colorado. The SLV field office manages 500,000+ acres including 22,000+ acres of Colorado's most ecologically significant wetland and wildlife habitat. Duties include habitat assessments, wildlife surveys, water quality monitoring, GIS/data analysis, invasive bullfrog trapping, vegetation monitoring, and well data collection. $600/week living allowance + housing stipend. Age requirement 18-30 (up to 35 for veterans). Must have valid US driver's license for 3+ years. This is the single closest AmeriCorps IP match for Erin's full skill set \u2014 wetland delineation, water quality, GIS, wildlife surveys all in one position. Apply at Conservation Legacy / Southwest Conservation Corps immediately.","badge":"Open now \u2014 apply immediately","pills":["Wetland delineation","Water quality monitoring","GIS & data analysis","Wildlife surveys"],"id":"item-038","url":"https://www.southwestconservationcorps.org/individual-placements"},{"title":"Environmental Conservation Corps \u2014 Restoration Crew & Community Restoration Members","org":"The Sustainability Institute \u00b7 Charleston / Lowcountry, SC & Bucksport/Conway, SC","type":"Service / Corps","cat":"Service & Fellowships","src":"erin_service.html","src_label":"Service & Fellowships","deadline":"","start":"","body":"Currently recruiting for the 2026 program year. Two positions available. Restoration Crew Members restore wildlife habitat and ecosystems across the Lowcountry: salt marshes, oyster reefs, rain gardens, native planting, water quality monitoring, erosion control, trails, and boardwalks. Community ...","badge":"Open / recruiting","pills":["Wetland restoration","Water quality testing","Oyster reef & salt marsh","Coastal ecology"],"id":"item-039","url":"https://environmentalconservationcorps.org/apply/"},{"title":"Biological Science Technician \u2014 Individual Placement, Cherokee National Forest","org":"Southeast Conservation Corps / US Forest Service \u00b7 Cherokee National Forest, TN","type":"Service / Corps","cat":"Service & Fellowships","src":"erin_service.html","src_label":"Service & Fellowships","deadline":"","start":"","body":"Southeast Conservation Corps has placed AmeriCorps members with the U.S. Forest Service's fisheries team in Cherokee National Forest in eastern Tennessee. Biological Science Technicians gain hands-on experience in aquatic resource monitoring, stream restoration, and watershed health \u2014 including e...","badge":"Verify status","pills":["Aquatic resource monitoring","Stream restoration","Watershed health","Appalachian region"],"id":"item-040","url":"https://southeastconservationcorps.org/individual-placements","url_label":"&#128269; SECC Individual Placements page","url2":"https://southeastconservationcorps.org/apply","url2_label":"&#128269; Apply to SECC"},{"title":"Wildlife Monitoring Individual Placement \u2014 Wichita Mountains Wildlife Refuge","org":"American Youthworks / US Fish & Wildlife Service \u00b7 Fort Sill / Lawton, OK","type":"Service / Corps","cat":"Service & Fellowships \u2014 Next Cycle","src":"erin_service_next.html","src_label":"Service & Fellowships \u2014 Next Cycle","deadline":"Jan 25, 2026 deadline passed \u2014 watch American Youthworks for next cycle","start":"","body":"AmeriCorps members assist in wildlife conservation through the ARTES (At Risk, Threatened, and Endangered Species) Program with the Wichita Mountains Wildlife Refuge and US Army Garrison at Fort Sill. Monitoring species including tricolored bat, monarch butterfly, black-capped vireo, northern bob...","badge":"Deadline passed \u2014 watch for 2026-27 cycle","pills":["Wildlife surveys","Endangered species monitoring","Habitat restoration","USFWS experience"],"id":"item-041","url":"erin_service_next.html","url_label":"Open Service & Fellowships \u2014 Next Cycle"},{"title":"Biological Science Individual Placement \u2014 USFWS Military Lands Conservation, Kirtland AFB","org":"Conservation Corps New Mexico (CCNM) / US Fish & Wildlife Service \u00b7 Albuquerque/Santa Fe, NM","type":"Service / Corps","cat":"Service & Fellowships","src":"erin_service.html","src_label":"Service & Fellowships","deadline":"","start":"","body":"IP member supports Kirtland AFB's Integrated Natural Resources Management Plan (INRMP) through wildlife surveys, data collection, and habitat restoration. Gains technical skills in bird survey/monitoring/identification, wetland restoration, and acoustic bat survey. Works with FWS biologists and p...","badge":"Verify status","pills":["Bird survey & monitoring","Wetland restoration","Bat surveys","USFWS & DOD collaboration"],"id":"item-042","url":"https://southeastconservationcorps.org/individual-placements","url_label":"\ud83d\udd0d SECC Individual Placements page","url2":"https://southeastconservationcorps.org/apply","url2_label":"\ud83d\udd0d Apply to SECC"},{"title":"Stewards Individual Placements \u2014 GIS Mapping, Species Inventory & Land Management","org":"Stewards Individual Placement Program / Conservation Legacy \u00b7 Various federal agencies","type":"Service / Corps","cat":"Service & Fellowships","src":"erin_service.html","src_label":"Service & Fellowships","deadline":"","start":"","body":"Stewards is the individual placement arm of Conservation Legacy, placing AmeriCorps members with federal agencies and nonprofits across the US. Members work on GIS mapping, inventory assessments, species inventory, invasive species removal, and historic preservation. Terms range from 10 weeks to ...","badge":"Open / recruiting","pills":["GIS mapping","Species inventory","Invasive species removal","Federal land management"],"id":"item-043","url":"https://stewardslegacy.org/open-positions"},{"title":"Environmental Compliance Intern \u2014 US Army Corps of Engineers","org":"The Corps Network / US Army Corps of Engineers \u00b7 Multiple locations (MN, MT, SD, UT)","type":"Service / Corps","cat":"Service & Fellowships \u2014 Next Cycle","src":"erin_service_next.html","src_label":"Service & Fellowships \u2014 Next Cycle","deadline":"All 2026 deadlines passed (May 1 / April 30 / March 31) \u2014 watch The Corps Network for next cycle postings","start":"","body":"Individual placement positions with the US Army Corps of Engineers through The Corps Network. Environmental compliance focus. Previous deadlines: May 1, 2026 for Cushing, MN/MT; April 30 for Hot Springs, SD; March 31 for Moab, UT. Benefits include housing stipend/assistance, relocation assistance...","badge":"Deadlines passed \u2014 watch for 2026-27 cycle","pills":["Environmental compliance","Federal agency experience","USACE","Public Lands Corps hiring authority"],"id":"item-044","url":"erin_service_next.html","url_label":"Open Service & Fellowships \u2014 Next Cycle"},{"title":"NC State University \u2014 Dept. of Forestry & Environmental Resources","org":"Raleigh, NC \u00b7 MS Forestry / Natural Resources \u2014 thesis track","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"~September 2026","start":"","body":"NC State remains Erin's single strongest institutional match. Dr. Jodi Forrester's lab focuses on forest recovery from disturbance events in western NC \u2014 directly overlapping with Erin's Pigeon River capstone. Even if the specific May 2026 position is filled, Fall 2027 positions in the same lab o...","badge":"Exceptional fit","pills":["Hurricane Helene recovery","Wetlands & forest ecology","Wildlife surveys","Appalachian field experience"],"id":"item-045","url":"https://cnr.ncsu.edu/fer/","url_label":"&#128269; NC State Forestry &amp; Environmental Resources","url2":"https://cnr.ncsu.edu/geospatial/academics/phd-in-geospatial-analytics/graduate-assistantships/","url2_label":"&#128269; NC State Center for Geospatial Analytics \u2014 GIS ass"},{"title":"Purdue University \u2014 Dept. of Forestry & Natural Resources","org":"West Lafayette, IN \u00b7 MS Environmental Science / Natural Resources","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"May 31, 2026 for current opening; position open until filled","start":"","body":"The Jo Lab at Purdue has an MS opening (Fall 2026 or Spring 2027) on how soil contamination influences vegetation dynamics at the Indiana Dunes \u2014 integrating field ecology, soil chemistry, and remote sensing. This is a near-direct match for Erin's Pigeon River lead contamination capstone methodol...","badge":"Good fit","pills":["Soil contamination","Vegetation dynamics","Remote sensing","Field ecology"],"id":"item-046","url":"https://www.purdue.edu/gradschool/prospective/gradrequirements/westlafayette/fnr.html","url_label":"&#128269; Purdue FNR graduate program","url2":"https://ag.purdue.edu/fnr/","url2_label":"ag.purdue.edu/fnr"},{"title":"Louisiana State University \u2014 Wetland & Aquatic Biogeochemistry Lab","org":"Baton Rouge, LA \u00b7 MS Oceanography & Coastal Sciences","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"February 15, 2027 for funding priority","start":"","body":"Dr. John White's WABL lab at LSU researches nutrient and contaminant biogeochemistry in freshwater and coastal wetlands \u2014 a strong match for Erin's water quality and contaminated rivers background. MS minimum stipend $23,000/yr; PhD $31,000. LSU requires faculty commitment before formal application.","badge":"Good fit","pills":["Coastal wetland biogeochemistry","Water quality","Nutrient cycling","Field sampling"],"id":"item-047","url":"https://faculty.lsu.edu/whitelab/graduateassistantships.php","url_label":"&#128269; LSU WABL assistantships","url2":"https://faculty.lsu.edu/whitelab/","url2_label":"&#128269; WABL lab website"},{"title":"University of Montana \u2014 MS Wildlife Biology","org":"Missoula, MT \u00b7 Wildlife Biology Program","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"January 15, 2027 (unless faculty specify otherwise for RA positions)","start":"","body":"UM's Wildlife Biology MS program receives ~100 applications/year and only accepts students with confirmed funding via RA or TA. Strong mammalogy and population ecology faculty. WICHE discount available for some states (check eligibility). TA packages include full tuition waiver. January 15 priori...","badge":"Good fit","pills":["Mammalogy & wildlife ecology","TA funding available","Mountain West","WICHE tuition discount"],"id":"item-048","url":"https://www.umt.edu/wildlife-biology/graduate/ms-wbio/","url_label":"&#128269; UM Wildlife Biology MS program","url2":"https://www.umt.edu/wildlife-biology/people/faculty/","url2_label":"&#128269; Browse UM Wildlife Biology faculty"},{"title":"Mississippi State University \u2014 Wildlife, Fisheries & Aquaculture","org":"Starkville, MS \u00b7 MS Wildlife or Fisheries","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"","start":"","body":"MSU's WFA department only accepts graduate students on funded projects. Contact faculty directly before applying \u2014 the department explicitly states that blind applications are less effective. Typical MS stipend $18,000\u2013$22,000/yr + tuition waiver. The Forest & Wildlife Research Center (FWRC) and ...","badge":"Good fit","pills":["Wildlife surveys","Fisheries & aquatic ecology","Southern US","Faculty-driven funding"],"id":"item-049","url":"https://www.wildlifefisheries.msstate.edu/students/graduate-programs.php","url_label":"&#128269; MSU WFA graduate programs","url2":"https://www.cfr.msstate.edu/job-board/","url2_label":"&#128269; MSU College of Forest Resources job board"},{"title":"Colorado State University \u2014 Ecosystem Science & Sustainability / GDPE","org":"Fort Collins, CO \u00b7 MS or PhD \u2014 multiple departments","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"","start":"","body":"CSU maintains 40\u201350 active graduate assistantships per semester across Ecosystem Science, Ecology, and related departments. The Landscape Modeling Lab (wetland remote sensing, Prairie Pothole Region) and Water, Environment & Society Group are both strong Erin fits. For Fall 2027 entry, Erin shoul...","badge":"Top recommendation","pills":["Wetland remote sensing","Water governance","Landscape ecology","40\u201350 active assistantships/semester"],"id":"item-050","url":"https://warnercnr.colostate.edu/ess/graduate-programs/graduate-research-opportunities/","url_label":"&#128269; CSU active grad opportunities","url2":"https://ecology.colostate.edu/assistantships/","url2_label":"&#128269; CSU Ecology (GDPE) assistantships"},{"title":"University of Minnesota \u2014 Water Resources Science Program","org":"St. Paul, MN \u00b7 MS Water Resources Science (interdisciplinary)","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"December 1, 2026 (expected)","start":"","body":"CSU maintains 40\u201350 active graduate assistantships per semester across Ecosystem Science, Ecology, and related departments. The Landscape Modeling Lab (wetland remote sensing, Prairie Pothole Region) and Water, Environment &amp; Society Group are both strong Erin fits. For Fall 2027 entry, Erin should contact faculty in August\u2013September 2026 and apply by December 1, 2026 (GDPE) or February 1, 2027 (ESS).","badge":"Watch for","pills":["Hydrology & water quality","Interdisciplinary MS","Faculty-funded RAs"],"id":"item-051","url":"https://wrs.umn.edu/prospective-students","url_label":"\ud83d\udd0d UMN Water Resources Science admissions","extbody":"Fall 2027 apps open ~mid-September 2026 (based on prior cycle) Priority deadline December 1, 2026 (expected) Funding All thesis students funded \u2014 RA or TA + tuition waiver + subsidized health insurance GPA minimum 3.0+ (Erin's 3.731 is competitive) GRE required Not required Contact faculty directly before applying: wrs.umn.edu/prospective-students/faculty . Mention water quality and contaminant transport background (GEOL 423, ENVH 310) and Pigeon River research.","contact":"Contact faculty directly before applying:"},{"title":"SUNY College of Environmental Science & Forestry (ESF) \u2014 Waterfowl & Wetlands MPS","org":"Syracuse, NY \u00b7 Master of Professional Studies \u2014 Ecological Restoration","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"","start":"","body":"SUNY ESF's MPS in Ecological Restoration with Waterfowl &amp; Wetlands Focus is actively accepting applications for Fall 2026 and Spring 2027 (up to 3 students). A scholarship covering in-state tuition for one semester is offered to the highest-ranked applicant. The program includes Ducks Unlimited wetland delineation training and intensive Wetlands Monitoring and Assessment field courses \u2014 a direct continuation of Erin's GEOL 455 Army Corps delineation work.","badge":"Good fit","pills":["Wetland management","Waterfowl ecology","Wetland delineation training","Ducks Unlimited partnership"],"id":"item-052","url":"https://www.esf.edu/graduate/","url_label":"\ud83d\udd0d SUNY ESF Waterfowl & Wetlands MPS listing (Wildlife Society)"},{"title":"USGS Pathways Recent Graduate Program \u2014 Hydrologist / Physical Scientist","org":"US Geological Survey \u00b7 South Atlantic Water Science Center (SAWSC) \u2014 NC, SC, GA","type":"Internship","cat":"Internships \u2014 Next Cycle","src":"erin_internships_next.html","src_label":"Internships \u2014 Next Cycle","deadline":"Posted year-round \u2014 set USAJobs saved search","start":"","body":"The USGS Recent Graduate Program provides 1\u20132 year paid developmental positions for graduates within the last 2 years, convertible to permanent federal employment. Erin graduated May 2025 \u2014 she remains eligible through May 2027. SAWSC covers exactly the NC/SC/GA region where she conducted her Pig...","badge":"Rolling year-round","pills":["Water quality monitoring","Hydrology fieldwork","SE United States","Converts to permanent"],"id":"item-053","url":"https://www.usgs.gov/human-capital/internship-recent-graduate-and-fellowship-opportunities","url_label":"&#128269; USGS Pathways opportunities","url2":"https://www.usajobs.gov/Search/Results?hp=rg&a=USGS","url2_label":"&#128269; USAJobs: USGS Recent Graduate positions"},{"title":"EPA Office of Water \u2014 Student Volunteer Internship (Fall 2026\u2013Spring 2027 cycle)","org":"US Environmental Protection Agency \u00b7 Office of Wetlands, Oceans & Watersheds \u2014 Washington, DC","type":"Internship","cat":"Internships \u2014 Next Cycle","src":"erin_internships_next.html","src_label":"Internships \u2014 Next Cycle","deadline":"Watch EPA Careers ~August 2026","start":"","body":"EPA's Office of Water runs rolling volunteer internship cycles in the Office of Wetlands, Oceans & Watersheds (OWOW) and Office of Wastewater Management (OWM). The 2025\u201326 cycle posting is active \u2014 the fall 2026 / spring 2027 cycle will post on a similar timeline (typically August\u2013September). Unp...","badge":"Watch \u2014 apply Aug/Sep 2026","pills":["Wetlands policy & science","Water quality","GIS & data analysis","Environmental justice"],"id":"item-054","url":"https://www.epa.gov/careers/student-volunteer-internships-20252026-office-water-washington-dc","url_label":"&#128269; Current cycle listing (for reference)","url2":"https://www.epa.gov/careers","url2_label":"&#128269; EPA Careers \u2014 watch for fall 2026 posting"},{"title":"USFWS Pathways Internship \u2014 Biological Science Student Trainee (GS-0404)","org":"US Fish & Wildlife Service \u00b7 Region 4 \u2014 Southeast National Wildlife Refuges","type":"Internship","cat":"Internships \u2014 Next Cycle","src":"erin_internships_next.html","src_label":"Internships \u2014 Next Cycle","deadline":"","start":"","body":"USFWS Pathways Internships are paid (GS-03 to GS-05, ~$15\u2013$22/hr) and can convert to permanent employment after degree completion. Region 4 covers NC, SC, GA, TN, AL, FL, MS, KY, AR \u2014 Erin's home geography. Fall positions typically post June\u2013August. USFWS recommends including a clarifying letter ...","badge":"Rolling \u2014 posts fall & spring","pills":["Wildlife surveys","Wetland management","Species monitoring","Federal hiring pathway"],"id":"item-055","url":"https://www.usajobs.gov/Search/Results?hp=student&a=FWS&k=biological+science","url_label":"&#128269; USAJobs: USFWS Biological Science student position","url2":"https://www.fws.gov/careers","url2_label":"&#128269; USFWS Careers page"},{"title":"USGS Wetland Ecology Internship \u2014 Great Lakes & Southeast Science Centers","org":"US Geological Survey \u00b7 Wetland Ecosystem Research","type":"Internship","cat":"Internships \u2014 Next Cycle","src":"erin_internships_next.html","src_label":"Internships \u2014 Next Cycle","deadline":"","start":"","body":"USGS science centers run individual wetland ecology internship projects through NSF REU programs and direct USGS funding. The USGS Great Lakes Science Center (invasive Phragmites research), Southeast Wetland Ecology team (SE swamp carbon, production, water quality), and Legacy Mining Impacts prog...","badge":"Verify \u2014 contact directly","pills":["Wetland ecosystem ecology","Long-term data sets","Field research design","Hydrology & biogeochemistry"],"id":"item-056","url":"https://www.usgs.gov/special-topics/national-science-foundation/usgs-internship-opportunities/ecology","pay":"Varies (student volunteer to paid technician)","location":"Science center-dependent; SE region and Great Lakes","url_label":"\ud83d\udd0d USGS Ecology/Ecosystems internship opportunities","extbody":"Best fit researchers to contact Browse the USGS Ecology/Ecosystems research page and identify scientists working on: SE swamp ecosystem ecology (wetland production, water quality, hydrology); watershed-scale legacy mining contamination (direct Pigeon River match \u2014 geotoxicology, water chemistry, GIS analysis); and Great Lakes coastal wetland invasive species control. Email directly with CV and a paragraph on the Pigeon River project. USGS internship portal usgs.gov/human-capital/internship-recen"},{"title":"Natural Resource Scientist / Environmental Technician \u2014 Fall/Year-Round Hire","org":"RK&K Engineers \u00b7 Raleigh, NC","type":"Internship","cat":"Internships \u2014 Next Cycle","src":"erin_internships_next.html","src_label":"Internships \u2014 Next Cycle","deadline":"","start":"","body":"RK&K is actively seeking an entry-level Natural Resource Scientist with a strong interest in wetlands and field-based environmental science in their Raleigh, NC office \u2014 confirmed open as of May 2026. This is exactly Erin's background: Army Corps delineation training (GEOL 455), water quality (EN...","badge":"Active posting","pills":["Wetland delineation","Field-based science","Raleigh, NC","Entry-level"],"id":"item-057","url":"https://www.indeed.com/q-entry-level-environmental-l-north-carolina-jobs.html","url_label":"&#128269; Search entry-level environmental NC (Indeed)","url2":"https://www.rkk.com/careers","url2_label":"&#128269; RK&amp;K Careers page"},{"title":"Entry-Level Environmental Scientist \u2014 SE Region","org":"Tetra Tech / AECOM / Geosyntec \u00b7 Raleigh NC, Asheville NC, Charleston SC, Atlanta GA","type":"Internship","cat":"Internships \u2014 Next Cycle","src":"erin_internships_next.html","src_label":"Internships \u2014 Next Cycle","deadline":"","start":"","body":"Tetra Tech has an active Entry-Level Environmental Scientist posting for southeastern US (Aiken, SC area) focused on environmental permitting and regulatory compliance, with wetland delineation experience as a plus. AECOM is recruiting for an entry-level Environmental Scientist in GA, AL, FL, and...","badge":"Rolling hire","pills":["Environmental compliance","Wetland delineation","NEPA permitting","SE United States"],"id":"item-058","url":"https://www.tetratech.com/en/careers","url_label":"&#128269; Tetra Tech Careers","url2":"https://aecom.com/careers/","url2_label":"&#128269; AECOM Careers"},{"title":"Georgia Southern University \u2014 MROC2S Postbac Research Fellowship","org":"Georgia Southern University / NSF RaMP Program \u00b7 Statesboro, GA \u00b7 Aug 2026 \u2013 July 2027","type":"Internship","cat":"Internships \u2014 Next Cycle","src":"erin_internships_next.html","src_label":"Internships \u2014 Next Cycle","deadline":"April 15, 2026 deadline passed \u2014 2027 cohort TBD; watch Georgia Southern","start":"","body":"The MROC2S (Mentoring and Research for Careers in Coastal Sciences) program at Georgia Southern is an NSF-funded postbaccalaureate research and mentoring fellowship for early-career scientists. The 2026\u201327 cohort (August 2026 \u2013 July 2027) had a deadline of April 15, 2026 \u2014 just passed. However, t...","badge":"Deadline passed April 15, 2026 \u2014 watch for 2027 cohort","pills":["Coastal science research","Funded postbac fellowship","NSF RaMP program","Stipend + housing"],"id":"item-059","url":"https://ecophys-jobs.org/temp.html","url_label":"&#128269; ecophys-jobs.org temp/seasonal listings (watch for","url2":"https://www.georgiasouthern.edu/cosm/biology/","url2_label":"&#128269; Georgia Southern Department of Biology"},{"title":"Jug Bay Wetlands Sanctuary \u2014 Research Internship (2027 cycle)","org":"Jug Bay Wetlands Sanctuary / USGS \u00b7 Lothian, MD (Chesapeake region)","type":"Internship","cat":"Internships \u2014 Next Cycle","src":"erin_internships_next.html","src_label":"Internships \u2014 Next Cycle","deadline":"~March 2027","start":"","body":"Jug Bay's 2026 research internship (beaver dam water quality study) had a March 27, 2026 deadline \u2014 now passed. This program recurs annually, June\u2013August, and is mentored by USGS wetland ecologists. The 2027 cycle will open January\u2013February 2027 with a ~March deadline. Ideal for Erin: the project...","badge":"Watch \u2014 2027 cycle","pills":["Wetland ecology field research","Water quality","USGS mentorship","Research proposal required"],"id":"item-060","url":"https://jugbay.org/internships-2/","url_label":"&#128269; Jug Bay internship program (watch for 2027)"},{"title":"Hydrologic Technician / Environmental Science Technician (GS-1316 / GS-1301)","org":"USGS South Atlantic Water Science Center \u00b7 NC, SC & GA offices","type":"Career Position","cat":"Career Positions \u2014 Next Cycle","src":"erin_jobs_next.html","src_label":"Career Positions \u2014 Next Cycle","deadline":"","start":"","body":"USGS SAWSC is Erin's single strongest federal target. Hydrologic Technicians in NC/SC/GA operate stream gauges, collect water quality samples, conduct aquatic biological surveys, and analyze field data \u2014 a professional extension of her Pigeon River capstone work. GS-05 to GS-07 scale (~$38k\u2013$52k)...","badge":"Rolling year-round","pills":["Water quality monitoring","Stream gauge operation","Biological field surveys","NC/SC/GA \u2014 home region"],"id":"item-061","url":"https://www.usgs.gov/centers/sawsc/science/south-atlantic-water-science-center-sawsc-student-corps-employment","url_label":"&#128269; SAWSC employment page","url2":"https://www.usajobs.gov/Search/Results?a=USGS&k=hydrologic+technician","url2_label":"&#128269; USAJobs: USGS Hydrologic Technician"},{"title":"Biological Science Technician (GS-0404) \u2014 SE Region National Wildlife Refuges","org":"US Fish & Wildlife Service \u00b7 Region 4 \u2014 NC, SC, GA, TN, AL, FL, MS","type":"Career Position","cat":"Career Positions \u2014 Next Cycle","src":"erin_jobs_next.html","src_label":"Career Positions \u2014 Next Cycle","deadline":"","start":"","body":"USFWS Biological Science Technician positions on National Wildlife Refuges in the SE region are well-matched to Erin's NRM 479 (Mammalogy), NRM 330 (Fish & Wildlife), and GEOL 455 (Wetlands) background. Fall seasonal positions (Aug\u2013Dec start) typically post June\u2013August. Permanent positions post y...","badge":"Rolling \u2014 fall cycle posts June\u2013Aug","pills":["Wildlife surveys","Wetland management","Species monitoring","National Wildlife Refuges"],"id":"item-062","url":"https://www.usajobs.gov/Search/Results?a=FWS&k=biological+science+technician&Series=0404","pay":"GS-04 to GS-07 (~$33k\u2013$52k)","location":"SE region NWR offices","benefits":"Full federal","url_label":"\ud83d\udd0d USAJobs: USFWS Biological Science Technician","url2":"https://www.fws.gov/careers","url2_label":"\ud83d\udd0d USFWS Careers","extbody":"Top NWR targets in Region 4 Pee Dee NWR (NC), Alligator River NWR (NC), Cape Romain NWR (SC), Piedmont NWR (GA), Great Dismal Swamp NWR (VA/NC), Santee NWR (SC). All wetland-focused; all within Erin's field region. Aquatic coursework note Include letter: \"GEOL 455 Wetlands covers wetland hydrology, soil chemistry indicators, and aquatic vegetation, and qualifies as aquatic science coursework for GS-0404.\" When to apply Set USAJobs saved search now; apply immediately when positions post in June\u2013A"},{"title":"Natural Resources Specialist / Environmental Scientist \u2014 401/404 Permitting","org":"US Army Corps of Engineers \u00b7 Wilmington District (NC/SC) or Savannah District (GA)","type":"Career Position","cat":"Career Positions \u2014 Next Cycle","src":"erin_jobs_next.html","src_label":"Career Positions \u2014 Next Cycle","deadline":"","start":"","body":"The USACE Wilmington District regulates wetlands under Section 404 of the Clean Water Act across NC and SC \u2014 the exact regulatory framework Erin studied directly in GEOL 455 using the Army Corps Wetland Delineation Manual and Eastern Mountains & Piedmont Regional Supplement. Entry-level Natural R...","badge":"Rolling","pills":["Section 404 permitting","Wetland delineation review","Army Corps Manual \u2014 direct match","Regulatory compliance"],"id":"item-063","url":"https://www.usajobs.gov/Search/Results?a=USACE&k=natural+resources+biologist+wetlands","url_label":"&#128269; USAJobs: Army Corps biologist/natural resources","url2":"https://www.saw.usace.army.mil/Careers/","url2_label":"&#128269; Wilmington District careers"},{"title":"Environmental Specialist I \u2014 Water Quality / Wetlands Division","org":"NC Department of Environmental Quality (NC DEQ) \u00b7 Asheville or Raleigh, NC","type":"Career Position","cat":"Career Positions \u2014 Next Cycle","src":"erin_jobs_next.html","src_label":"Career Positions \u2014 Next Cycle","deadline":"","start":"","body":"NC DEQ's Division of Water Resources hires Environmental Specialists with water quality and wetlands backgrounds for 401 Water Quality Certification review, wetland/stream impact permit evaluation, and field compliance inspections. The Asheville Western Regional Office is particularly relevant \u2014 ...","badge":"Rolling","pills":["401/404 permitting review","Wetland compliance","Field inspections","Hurricane Helene context"],"id":"item-064","url":"https://deq.nc.gov/careers","url_label":"&#128269; NC DEQ Careers page","url2":"https://www.governmentjobs.com/careers/northcarolina?keywords=environmental+specialist+water","url2_label":"&#128269; NC state job board \u2014 environmental specialist"},{"title":"Wildlife Biologist I / Wildlife Technician","org":"NC Wildlife Resources Commission (NCWRC) \u00b7 Mountain & Piedmont regions","type":"Career Position","cat":"Career Positions \u2014 Next Cycle","src":"erin_jobs_next.html","src_label":"Career Positions \u2014 Next Cycle","deadline":"","start":"","body":"NCWRC hires Wildlife Biologists and Technicians for population monitoring, habitat assessment, and GIS-based wildlife management. The mountain region office manages species Erin studied in NRM 479 (small mammals, mustelids, bears) and NRM 330 (population management frameworks). GIS skills are exp...","badge":"Rolling","pills":["Wildlife population monitoring","Mammal surveys","GIS spatial analysis","NC mountain region"],"id":"item-065","url":"https://www.ncwildlife.org/About-Us/Careers","url_label":"&#128269; NCWRC Careers page"},{"title":"Environmental Compliance Technician / Staff Environmental Scientist","org":"WSSI, CDM Smith, Tetra Tech, ECS Federal, Kimley-Horn \u00b7 Raleigh NC, Charlotte NC, Denver CO","type":"Career Position","cat":"Career Positions \u2014 Next Cycle","src":"erin_jobs_next.html","src_label":"Career Positions \u2014 Next Cycle","deadline":"","start":"","body":"Environmental consulting firms hire year-round. CDM Smith is actively seeking entry-level Environmental Scientists performing soil/water sampling, wetland delineation, and wildlife habitat surveys. WSSI (Raleigh) has an active Environmental Compliance Technician opening. For an Aug/Sep 2026 start...","badge":"Rolling year-round","pills":["Wetland delineation (Army Corps)","SWPPP development","Environmental compliance","Report writing"],"id":"item-066","url":"https://www.wetlands.com/careers/current-openings/","url_label":"&#128269; WSSI current openings (Raleigh \u2014 active)","url2":"https://www.cdmsmith.com/en/Careers","url2_label":"&#128269; CDM Smith Careers"},{"title":"BLM Wetlands & Wildlife Technician \u2014 Individual Placement (2026\u201327 cycle)","org":"Southwest Conservation Corps / Bureau of Land Management \u00b7 San Luis Valley Field Office \u00b7 Monte Vista, CO","type":"Service / Corps","cat":"Service & Fellowships","src":"erin_service.html","src_label":"Service & Fellowships","deadline":"Active \u2014 posted May 2026","start":"","body":"This is the closest AmeriCorps IP match for Erin's full skill set \u2014 verified active for the 2025\u201326 cycle (May\u2013September 2026, now closed). The 2026 version served with the BLM San Luis Valley Field Office managing 22,000+ acres of ecologically significant wetland and wildlife habitat in Colorado...","badge":"Open now \u2014 apply immediately","pills":["Wetland delineation & monitoring","Water quality","GIS & data analysis","Wildlife surveys"],"id":"item-067","url":"erin_service.html","url_label":"Open Service & Fellowships"},{"title":"Stewards Individual Placements \u2014 GIS Mapping, Species Inventory & Land Management","org":"Conservation Legacy / Stewards \u00b7 BLM, USFS, NPS, USFWS \u2014 multiple locations","type":"Service / Corps","cat":"Service & Fellowships \u2014 Next Cycle","src":"erin_service_next.html","src_label":"Service & Fellowships \u2014 Next Cycle","deadline":"","start":"","body":"Stewards (Conservation Legacy's IP program) places AmeriCorps members with federal agencies across the country for 10-week to 1-year terms. Members work on GIS mapping, inventory assessments, species surveys, invasive species removal, and water resources work. New positions post continuously. Thi...","badge":"Rolling \u2014 new positions year-round","pills":["GIS mapping","Species inventory","Invasive species management","Federal land management"],"id":"item-068","url":"https://stewardslegacy.org/open-positions","url_label":"&#128269; Stewards open positions (apply here \u2014 updates dail","url2":"https://stewardslegacy.org/JOIN","url2_label":"&#128269; Stewards program overview"},{"title":"Biological Science Technician IP \u2014 Cherokee & Pisgah National Forests","org":"Southeast Conservation Corps / US Forest Service \u00b7 Eastern TN / Western NC","type":"Service / Corps","cat":"Service & Fellowships \u2014 Next Cycle","src":"erin_service_next.html","src_label":"Service & Fellowships \u2014 Next Cycle","deadline":"","start":"","body":"Southeast Conservation Corps regularly places AmeriCorps members with US Forest Service fisheries and wildlife teams in Cherokee National Forest (TN) and Pisgah National Forest (NC) \u2014 the exact landscape of Erin's Hurricane Helene research. Duties include aquatic resource monitoring, stream resto...","badge":"Verify \u2014 SECC posts year-round","pills":["Aquatic resource monitoring","Stream restoration","Electrofishing & macroinvertebrates","Appalachian region"],"id":"item-069","url":"https://southeastconservationcorps.org/individual-placements","url_label":"&#128269; SECC Individual Placements","url2":"https://southeastconservationcorps.org/apply","url2_label":"&#128269; Apply to SECC"},{"title":"Wildlife Monitoring IP \u2014 Wichita Mountains Wildlife Refuge (2026 cycle)","org":"American Youthworks / USFWS \u00b7 Fort Sill / Lawton, OK","type":"Service / Corps","cat":"Service & Fellowships \u2014 Next Cycle","src":"erin_service_next.html","src_label":"Service & Fellowships \u2014 Next Cycle","deadline":"March 2, 2026 \u2013 November 6, 2026 (1200 hour) \u2014 current term active; check for backfill positions","start":"","body":"American Youthworks places AmeriCorps members at the Wichita Mountains Wildlife Refuge and Fort Sill through the ARTES (At Risk, Threatened, and Endangered Species) Program \u2014 monitoring tricolored bat, monarch butterfly, black-capped vireo, and northern bobwhite quail. The 2026 cycle (March 2 \u2013 N...","badge":"Active March 2026 \u2013 Nov 2026 \u2014 verify backfill","pills":["Endangered species monitoring","Wildlife surveys","USFWS experience","Bat surveys"],"id":"item-070","url":"https://americanyouthworks.org/what-we-do/cc/open-positions","url_label":"&#128269; American Youthworks open positions"},{"title":"EPA Greater Research Opportunities (GRO) Fellowship","org":"US Environmental Protection Agency \u00b7 Nationwide + EPA facility summer internship","type":"Service / Corps","cat":"Service & Fellowships \u2014 Next Cycle","src":"erin_service_next.html","src_label":"Service & Fellowships \u2014 Next Cycle","deadline":"Typically fall annually","start":"","body":"The EPA GRO Fellowship covers tuition and provides a stipend for students in environmental careers, including a paid summer internship at an EPA facility. Designed for undergraduate seniors and graduate students pursuing degrees in environmentally-related fields. If Erin enrolls in a graduate pro...","badge":"Watch \u2014 falls open annually in fall","pills":["Tuition + stipend coverage","Paid EPA summer internship","Environmental health focus","Graduate school bridge"],"id":"item-071","url":"https://www.epa.gov/careers/gro-fellowships","url_label":"&#128269; EPA GRO Fellowship"},{"title":"USDA Forest Service Pathways Recent Graduate Program","org":"USDA Forest Service \u00b7 Multiple offices, SE and Mountain West","type":"Service / Corps","cat":"Service & Fellowships \u2014 Next Cycle","src":"erin_service_next.html","src_label":"Service & Fellowships \u2014 Next Cycle","deadline":"","start":"","body":"The USDA Forest Service Pathways Recent Graduate Program places graduates within the past 2 years in 1-year developmental positions that convert to permanent federal employment. Biological science, hydrology, GIS, and natural resources positions are available. Erin graduated May 2025 \u2014 eligible t...","badge":"Rolling \u2014 posted on USAJobs","pills":["Permanent federal pathway","Biological science / GIS","1-year developmental program","Converts to permanent"],"id":"item-072","url":"https://www.usajobs.gov/Search/Results?hp=rg&k=environmental+science+biological&a=FS","url_label":"&#128269; USAJobs: USDA Forest Service Recent Graduate","url2":"https://www.fs.usda.gov/working-with-us/jobs/pathways","url2_label":"&#128269; USDA FS Pathways program overview"},{"title":"Smithsonian Environmental Research Center \u2014 Research Technician","org":"Smithsonian Environmental Research Center \u00b7 Edgewater, MD (Chesapeake Bay)","type":"Service / Corps","cat":"Service & Fellowships \u2014 Next Cycle","src":"erin_service_next.html","src_label":"Service & Fellowships \u2014 Next Cycle","deadline":"","start":"","body":"SERC's Global Change Ecology and Biogeochemistry Labs recruit research technicians for coastal ecosystem and wetland response research (~$46k/yr, 6-month to 1-year appointments). Current and recent openings have focused on root and rhizome processing from long-term wetland experiments \u2014 field and...","badge":"Verify \u2014 watch SERC careers","pills":["Coastal ecosystem research","Wetland biogeochemistry","Long-term experiments","Global Change Ecology"],"id":"item-073","url":"https://serc.si.edu/about-serc/careers","url_label":"&#128269; SERC Careers page","url2":"https://ecophys-jobs.org/temp.html","url2_label":"&#128269; ecophys-jobs.org seasonal/temp (watch for posting)"},{"title":"Oklahoma State University \u2014 Watershed Hydrology & Rangeland Ecology (2 MS positions)","org":"Stillwater, OK \u00b7 Environmental Science Graduate Program","type":"Graduate Program","cat":"Funded Graduate Programs","src":"erin_programs.html","src_label":"Funded Graduate Programs","deadline":"May 15, 2026 \u2014 URGENT","start":"May 27\u2013June 5, 2026","body":"Two fully funded MS assistantships for an interdisciplinary watershed conservation project in the Neosho River Watershed of northeastern Oklahoma. Includes the Tar Creek Superfund Site \u2014 one of the most historically significant mining-contaminated landscapes in the US. Position 1 (Ecology/Rangeland): wildlife habitat assessment, species of greatest conservation need, restoration planning for woodland and tallgrass prairie. Position 2 (Hydrology/GIS): watershed hydrology, site suitability modeling, conservation planning. Both include: stipend + health insurance + tuition waiver. Advisors: Dr. Scott Stoodley and Dr. Jaime Schussler. Apply by emailing letter of interest, resume, and unofficial transcripts to esgp@okstate.edu. The contaminated watershed + GIS + field ecology combination is a direct methodological match for Erin's Pigeon River lead contamination capstone.","badge":"Exceptional fit \u2014 URGENT, deadline May 15","pills":["Watershed hydrology","GIS & site suitability","Contaminated sites","Rangeland & wildlife ecology"],"id":"item-074","url":"https://www.conservationjobboard.com/job-listing-oklahoma-state-university---graduate-research-assistantships-2---ms-environmental-science-range-ecologyhydrology-stillwater-oklahoma/1051514597"},{"title":"Alabama A&M University \u2014 Longleaf Pine Ecology MS","org":"Huntsville, AL \u00b7 Department of Forestry","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"April 24, 2026 (passed) \u2014 contact directly for next opening","start":"","body":"Funded MS research assistantship in the AAMU forestry program. Student monitors longleaf pine growth and reproduction across the southern states (AL, GA, FL). AAMU is an HBCU in Huntsville, AL with a strong forestry and natural resources program. Longleaf pine ecosystem monitoring aligns with Erin's southeastern field experience and wildlife/ecology background. Contact the forestry department directly to verify current availability and next opening. AAMU's location in northern Alabama places the student close to some of the most important longleaf pine restoration landscapes in the country.","badge":"Deadline passed \u2014 contact directly","pills":["Longleaf pine ecology","Forest monitoring","Southern US","HBCU institution"],"id":"item-075","url":"erin_programs_next.html","url_label":"Open Graduate Programs \u2014 Next Cycle"},{"title":"University of Arkansas \u2014 Water Quality / Stream Biogeochemistry (PhD)","org":"Fayetteville, AR \u00b7 Department of Biological Sciences","type":"Graduate Program","cat":"Graduate Programs \u2014 Next Cycle","src":"erin_programs_next.html","src_label":"Graduate Programs \u2014 Next Cycle","deadline":"February 24, 2026 (passed) \u2014 contact lab for next cycle","start":"","body":"Funded PhD position in water quality and stream biogeochemistry posted February 2026. The research focus \u2014 stream chemistry, nutrient cycling, and water quality in Ozark/Arkansas river systems \u2014 aligns directly with Erin's contaminated rivers and water quality coursework and her Pigeon River capstone. University of Arkansas has a strong biological sciences program with active federally funded stream research. Contact the PI directly for Fall 2027 openings \u2014 this lab is doing relevant work and worth a direct reach-out email.","badge":"Deadline passed \u2014 contact for Fall 2027","pills":["Stream biogeochemistry","Water quality","Nutrient cycling","Arkansas river systems"],"id":"item-076","url":"erin_programs_next.html","url_label":"Open Graduate Programs \u2014 Next Cycle"},{"title":"Dauphin Island Sea Lab \u2014 BOATS Postbac Fellowship","org":"Dauphin Island, AL \u00b7 Mobile Bay estuary / northern Gulf of Mexico","type":"Internship","cat":"Internships","src":"erin_internships.html","src_label":"Internships","deadline":"Application window open March 30 \u2013 August 21, 2026; program Jan 4 \u2013 Dec 17, 2027","start":"January 4, 2027","body":"NSF-funded postbaccalaureate research fellowship at the Dauphin Island Sea Lab (DISL), Alabama's premier marine science research center on a Gulf barrier island adjacent to Mobile Bay. $46K stipend + funds for research + on-site housing. One full year of immersive, mentored research experience. Faculty mentors include researchers in fisheries ecology (Dr. Sean Powers), marine ecology/restoration, microbial ecology, biological oceanography, and coastal systems. Qualifications: BS degree within past 2.5 years (Erin remains eligible through late 2027), minimum 3.0 GPA. Priority given to underrepresented groups and those from lower-resourced institutions \u2014 WCU qualifies. Strong fit for Erin's aquatic/water quality background and goal of building toward graduate school. Application window is open now.","badge":"Open \u2014 apply by August 21, 2026","pills":["Marine & coastal ecology","Fisheries & aquatic science","$46K stipend + housing","Grad school preparation"],"id":"item-077","url":"https://www.disl.edu/university-programs/boats/"},{"title":"Dauphin Island Sea Lab \u2014 Fisheries Ecology Lab Internship (Dr. Sean Powers)","org":"Dauphin Island, AL \u00b7 Mobile Bay / Gulf of Mexico","type":"Internship","cat":"Internships","src":"erin_internships.html","src_label":"Internships","deadline":"Rolling \u2014 preference for 6-month commitment; available throughout 2026 field season","start":"","body":"Paid internships available throughout the 2026 field season in Dr. Sean Powers' Fisheries Ecology Lab at DISL. Projects involve fish (bony fishes, sharks, rays) and shellfish in waters adjacent to Dauphin Island \u2014 a Gulf barrier island in the northern Gulf of Mexico fringing Mobile Bay estuary. Interns gain experience with sampling techniques in fisheries research and associated laboratory sample processing. Preference given to those who can commit a minimum of 6 months. This is a rolling position \u2014 apply directly through the DISL website. Less directly aligned to Erin's wetland/wildlife focus but excellent coastal Gulf aquatic experience and access to the DISL research network (which feeds into the BOATS fellowship above).","badge":"Rolling \u2014 contact lab directly","pills":["Fisheries ecology","Marine sampling","Mobile Bay estuary","Gulf of Mexico coastal systems"],"id":"item-078","url":"https://www.disl.edu/about/internships/"},{"title":"University of Alabama / Jones Center at Ichauway \u2014 Woods to Water RaMP Postbac","org":"Tuscaloosa, AL + Newton, GA (Jones Center at Ichauway)","type":"Internship","cat":"Internships \u2014 Next Cycle","src":"erin_internships_next.html","src_label":"Internships \u2014 Next Cycle","deadline":"August 2026 \u2013 July 2027 cohort: deadline was April 15, 2026 (just passed) \u2014 watch for 2027-28 cohort","start":"August 2026","body":"NSF-funded year-long postbaccalaureate training program in field ecology. The Woods to Water (W2W) project is run by the University of Alabama in partnership with the National Ecological Observatory Network (NEON) and the Jones Center at Ichauway \u2014 a 30,000-acre property in southwest Georgia with 18,000 acres of longleaf pine, 1,000 acres of wetlands, and 25 miles of stream and river ecosystems. Program provides: stipend + free housing, training in field techniques linking terrestrial and aquatic ecosystems, water chemistry, biogeochemistry, and data science. Specifically prepares participants for graduate school in ecology. The April 15, 2026 deadline for the August 2026 cohort just passed \u2014 check directly with the program to see if they are still accepting applications, or watch for the 2027-28 cohort. Ideal fit: combines longleaf, wetlands, streams, and data science \u2014 exactly Erin's interdisciplinary background.","badge":"Verify \u2014 deadline just passed; contact program directly","pills":["Longleaf pine & wetlands","Aquatic biogeochemistry","NEON field methods","Stipend + free housing"],"id":"item-079","url":"https://www.nsf.gov/funding/pgm_summ.jsp?pims_id=505878"},{"title":"Conservation Corps Minnesota & Iowa \u2014 Individual Placements (Soil & Water / Natural Resources)","org":"Minnesota, Iowa, and surrounding states","type":"Service / Corps","cat":"Service & Fellowships \u2014 Next Cycle","src":"erin_service_next.html","src_label":"Service & Fellowships \u2014 Next Cycle","deadline":"Rolling \u2014 new positions posted continuously at conservationcorps.org/join","start":"","body":"Conservation Corps Minnesota & Iowa places AmeriCorps members with Soil and Water Conservation Districts and natural resource agencies across MN and surrounding states for full-year IP terms. Summer positions include 3- or 6-month soil and water corpsmember roles with SWCD districts: assisting with groundwater monitoring programs, wetland and watercourse inventories and assessments, field surveys, and educational programs. Full-year IPs include GIS mapping, species inventory, invasive species management, water quality monitoring, and policy/planning roles at agencies like MN DNR, USFS, and nonprofit partners. Strong match for Erin's GIS, water quality, and wildlife inventory skills. Positions post year-round \u2014 browse current openings at conservationcorps.org. Good option for Midwest experience.","badge":"Rolling \u2014 browse current openings","pills":["Wetland & water inventories","GIS mapping","Soil & Water Conservation Districts","AmeriCorps year-round"],"id":"item-080","url":"https://conservationcorps.org/join/"},{"id":"item-081","title":"Environmental Scientist I \u2014 Wetland Delineation & Stream Assessment","org":"Wildlands Engineering \u00b7 Charlotte, NC / Asheville, NC / Knoxville, TN","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","url":"https://www.wildlandseng.com/career-opportunities/","deadline":"Rolling \u2014 open until filled; apply directly at wildlandseng.com","start":"","body":"Wildlands Engineering is a leading environmental restoration firm specializing in stream and wetland mitigation banking across the Southeast. Entry-level Environmental Scientists perform stream and general ecological assessments, geomorphic surveys, wetland delineations, endangered and threatened species surveys, vegetation inventories, and prepare environmental permit applications and technical reports. GIS professionals create maps and construction plan sets. The firm works extensively in the Appalachians and Southeast \u2014 directly overlapping with Erin's WCU coursework geography and Hurricane Helene research context. Offices in Charlotte, Asheville, and Knoxville, TN. They also list GIS Technician positions separately. Send resume and cover letter to resumes@wildlandseng.com with the position in the subject line. Wildlands actively recruits at WCU and Appalachian State.","badge":"Rolling \u2014 strong fit","pills":["Wetland delineation","Stream assessment","Species surveys","Appalachian/SE focus"]},{"id":"item-082","title":"Environmental Compliance Technician \u2014 Raleigh, NC","org":"WSSI (Wetland Studies and Solutions, Inc.) \u00b7 Raleigh, NC","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","url":"https://www.wetlands.com/careers/current-openings/","deadline":"Open \u2014 apply directly at wetlands.com/careers","start":"","body":"CONFIRMED OPEN May 2026. WSSI is seeking an environmental compliance technician to join their Raleigh, NC team. Ideal candidates have a BS in Environmental Studies or related field and at least 1 year of experience performing environmental compliance \u2014 Erin's capstone fieldwork and coursework would qualify. Responsibilities: SWPPP inspections and reporting, coordination with federal and state resource agencies on wetlands, erosion/sediment control, stormwater compliance, and BMP construction monitoring. WSSI is an award-winning wetland and environmental consulting firm (Gainesville, VA; Millersville, MD; Raleigh, NC; Richmond, VA offices) offering 401k, medical, dental, vision, and life insurance. This is an entry-level path into permitting and consulting. The Raleigh location is ideal for the NC geography Erin knows well from field coursework.","badge":"Open now \u2014 confirmed May 2026","pills":["Environmental compliance","Wetlands & stormwater","Raleigh NC","SWPPP / BMP monitoring"]},{"id":"item-083","title":"Entry-Level Environmental Scientist \u2014 Ecological Restoration","org":"RES (Resource Environmental Solutions) \u00b7 Raleigh, NC / Southeast Region","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","url":"https://res.us/home/people/working-here/","deadline":"Rolling \u2014 check res.us/careers for current openings","start":"","body":"RES is one of the largest ecological restoration companies in the US, specializing in stream and wetland mitigation banking, habitat creation, and restoration ecology. They actively hire entry-level scientists for field crews and project support roles in the Southeast. Work includes wetland and stream restoration monitoring, invasive species control, reforestation, and GIS analysis. RES has a strong NC/Southeast presence and regularly recruits from Appalachian-region schools. They explicitly hire purpose-driven candidates passionate about ecosystems. Strong match for Erin's wetlands, water quality, GIS, and Hurricane Helene restoration context. Typically post field scientist and restoration technician roles year-round. Check RES careers page directly and set a job alert.","badge":"Rolling \u2014 check RES careers","pills":["Stream & wetland restoration","GIS analysis","Mitigation banking","SE region focus"]},{"id":"item-084","title":"Natural Resource Scientist / Wetland Scientist I \u2014 RK&K","org":"RK&K Engineering \u00b7 Raleigh, NC","type":"Career Position","cat":"Career Positions","src":"erin_jobs.html","src_label":"Career Positions","url":"https://www.rkk.com/careers/","deadline":"Rolling \u2014 active posting confirmed on Indeed May 2026","start":"","body":"RK&K is seeking an entry-level Natural Resource Scientist (Wetland Scientist I) with a strong interest in wetlands and field-based environmental science for their Raleigh, NC office. The role supports transportation and infrastructure projects through wetland delineations, stream assessments, natural resource reports, and Section 404/401 permitting. RK&K is a mid-size engineering and consulting firm with significant NC DOT work \u2014 a reliable, steady employer. Erin's GEOL 423 (Contaminated Rivers), ENVH 310 (Water Quality), and GEOL 309 (Wetland Delineation) coursework are directly applicable. The Raleigh office location aligns with the NC professional network she'd build through NC State contacts and Dr. Forrester's program.","badge":"Active posting \u2014 apply now","pills":["Wetland delineation","Section 404/401 permitting","Raleigh NC","Transportation projects"]},{"id":"item-085","title":"Entry-Level Environmental Scientist \u2014 SE Region (GA, AL, FL, SC)","org":"AECOM \u00b7 Georgia / Alabama / Florida / South Carolina","type":"Career Position","cat":"Career Positions \u2014 Next Cycle","src":"erin_jobs_next.html","src_label":"Career Positions \u2014 Next Cycle","url":"https://aecom.com/careers/","deadline":"Spring/Summer 2026 hiring event passed; watch for next cycle postings fall 2026","start":"Spring/Summer 2027 entry","body":"AECOM is a global infrastructure firm that hires entry-level environmental scientists for their Southeast offices (Georgia, Alabama, Florida, South Carolina). The role supports environmental compliance, remediation, permitting, and planning projects. Spring/Summer 2026 cycle's hiring event (Atlanta, Feb 2026) has passed \u2014 watch for the 2027 entry cycle posting in fall 2026. Qualifications: BS in Environmental Science, Geology, Ecology, Biology, or related field. Responsibilities include data collection and analysis for environmental compliance, stormwater sampling, and field site visits. AECOM's scale means strong training programs and upward mobility across offices. Geographic openness is Erin's advantage here.","badge":"Watch for fall 2026 posting","pills":["Large firm","Environmental compliance","SE multi-state","Compliance & permitting"]},{"id":"item-086","title":"Environmental Scientist / Hydrologist \u2014 Geosyntec Consultants","org":"Geosyntec Consultants \u00b7 Raleigh, NC (and SE offices)","type":"Career Position","cat":"Career Positions \u2014 Next Cycle","src":"erin_jobs_next.html","src_label":"Career Positions \u2014 Next Cycle","url":"https://www.geosyntec.com/careers","deadline":"Rolling \u2014 check geosyntec.com/careers; Raleigh office posting confirmed May 2026","start":"","body":"Geosyntec has an Early-Career Environmental Engineer or Scientist opening as part of their contaminated site assessment and remediation practice in one of their Carolinas offices (Raleigh). This is a strong match for Erin's contaminated rivers background \u2014 her Pigeon River lead contamination capstone is directly relevant to contaminated site investigation work. Geosyntec is a specialist consulting firm known for cutting-edge environmental science. The role involves site characterization, remedial investigation, and data analysis. Requires BS in Environmental Science, Geology, or related field. Erin's GEOL 423 (Contaminated Rivers), GEOL 349 (Hydrogeology), and GEOL 455 (Environmental Geochemistry) are exactly what Geosyntec looks for.","badge":"Rolling \u2014 verify current openings","pills":["Contaminated site investigation","Hydrogeology","Raleigh NC / Carolinas","Geosyntec specialist firm"]}];
+var BIN = '6a039aa4250b1311c33f2bac', KEY = '$2a$10$zEyOgbH7E5.fBt9UlxHh8.yPbLUnHJKEhpY2z9WCQJ1fS/WLCOBpa', STORE = 'erin_mylist_v1';
+var mf = 'All', bf = 'All';
+var CATS = ['All','Graduate Program','Internship','Career Position','Service / Corps'];
+
+function load(){ try{ return JSON.parse(localStorage.getItem(STORE)||'{}'); }catch(e){ return {}; } }
+function save(m){ localStorage.setItem(STORE,JSON.stringify(m)); }
+function has(id){ return !!load()[id]; }
+
+function push(m){
+  if(!isPrimary()) return; // Only primary device writes to cloud
+  fetch('https://api.jsonbin.io/v3/b/'+BIN+'/latest',{headers:{'X-Master-Key':KEY}})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      var rec=data.record||{};
+      rec.items=m;
+      return fetch('https://api.jsonbin.io/v3/b/'+BIN,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json','X-Master-Key':KEY,'X-Bin-Versioning':'false'},
+        body:JSON.stringify(rec)
+      });
+    }).then(function(){ flash('Synced'); }).catch(function(){ flash('Sync error'); });
+}
+
+function flash(msg){
+  var el=document.getElementById('ss');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(function(){ el.classList.remove('show'); },2500);
+}
+
+function addItem(d){ var m=load(); m[d.id]=d; save(m); push(m); }
+function delItem(id){ var m=load(); delete m[id]; save(m); push(m); }
+
+// ── Archive log: rationale capture when items are removed from My List ──
+// Shared store with Applications page ('erin_archive_log', bin key 'archiveLog')
+// so the full history of every passed-on opportunity lives in one place.
+var ARCHIVE_STORE='erin_archive_log';
+function loadArchive(){ try{ return JSON.parse(localStorage.getItem(ARCHIVE_STORE)||'[]'); }catch(e){ return []; } }
+function saveArchive(arr){ localStorage.setItem(ARCHIVE_STORE,JSON.stringify(arr)); }
+function pushArchive(arr){
+  if(!isPrimary()) return;
+  fetch('https://api.jsonbin.io/v3/b/'+BIN+'/latest',{headers:{'X-Master-Key':KEY}})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      var rec=data.record||{}; rec.archiveLog=arr;
+      fetch('https://api.jsonbin.io/v3/b/'+BIN,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':KEY,'X-Bin-Versioning':'false'},body:JSON.stringify(rec)});
+    }).catch(function(){});
+}
+function logArchive(entry){
+  if(!entry) return;
+  var arr=loadArchive();
+  entry.id='arch-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);
+  entry.date=new Date().toISOString();
+  arr.push(entry);
+  saveArchive(arr); pushArchive(arr);
+}
+
+// Shared rationale modal — also lives on the Applications page. cb(null) on cancel.
+window.showArchiveModal=function(opts, cb){
+  var TAGS=['too far','no funding','wrong research fit','missed deadline','better option','not competitive','other'];
+  var overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;font-family:var(--fn,sans-serif)';
+  var modal=document.createElement('div');
+  modal.style.cssText='background:var(--bg);border:.5px solid var(--bd);border-radius:12px;max-width:440px;width:100%;padding:1.25rem 1.35rem;box-shadow:0 8px 32px rgba(0,0,0,.28);color:var(--t1)';
+  var actionVerb={removed:'Remove from list',declined:'Mark as Declined',waitlisted:'Mark as Waitlisted',accepted:'Mark as Accepted'}[opts.action]||'Archive';
+  var t=document.createElement('div');
+  t.style.cssText='font-size:14px;font-weight:600;color:var(--t1);margin-bottom:.35rem;line-height:1.4';
+  t.textContent=actionVerb+': '+(opts.title||'this item');
+  modal.appendChild(t);
+  if(opts.org){
+    var og=document.createElement('div'); og.style.cssText='font-size:12px;color:var(--t3);margin-bottom:.85rem'; og.textContent=opts.org; modal.appendChild(og);
+  }
+  var hint=document.createElement('div');
+  hint.style.cssText='font-size:12px;color:var(--t2);margin-bottom:.6rem;line-height:1.5';
+  hint.textContent='A one-line rationale helps future-Erin understand the past. Optional, but recommended.';
+  modal.appendChild(hint);
+  var tagsRow=document.createElement('div'); tagsRow.style.cssText='display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.75rem';
+  var pickedTags={};
+  TAGS.forEach(function(tg){
+    var btn=document.createElement('button'); btn.type='button'; btn.textContent=tg;
+    btn.style.cssText='font-size:11px;font-weight:500;padding:4px 10px;border-radius:999px;border:1px solid var(--bds);background:transparent;color:var(--t2);cursor:pointer;font-family:inherit';
+    btn.onclick=function(){
+      pickedTags[tg]=!pickedTags[tg];
+      btn.style.background=pickedTags[tg]?'var(--teal-bg)':'transparent';
+      btn.style.color=pickedTags[tg]?'var(--teal-t)':'var(--t2)';
+      btn.style.borderColor=pickedTags[tg]?'var(--teal)':'var(--bds)';
+    };
+    tagsRow.appendChild(btn);
+  });
+  modal.appendChild(tagsRow);
+  var input=document.createElement('textarea');
+  input.placeholder='Brief reason (e.g. "Lab too small, advisor not taking students for Fall 2027")';
+  input.style.cssText='width:100%;min-height:60px;font-size:13px;padding:8px 10px;border-radius:8px;border:1px solid var(--bds);background:var(--bg2);color:var(--t1);font-family:inherit;resize:vertical;box-sizing:border-box';
+  modal.appendChild(input);
+  var btnRow=document.createElement('div'); btnRow.style.cssText='display:flex;gap:.6rem;justify-content:flex-end;margin-top:.85rem;flex-wrap:wrap';
+  var cancel=document.createElement('button'); cancel.type='button'; cancel.textContent='Cancel';
+  cancel.style.cssText='font-size:12px;padding:6px 14px;border-radius:6px;border:.5px solid var(--bds);background:transparent;color:var(--t2);cursor:pointer;font-family:inherit';
+  cancel.onclick=function(){ document.body.removeChild(overlay); cb(null); };
+  var skip=document.createElement('button'); skip.type='button'; skip.textContent='Skip reason';
+  skip.style.cssText='font-size:12px;padding:6px 14px;border-radius:6px;border:.5px solid var(--bds);background:var(--bg2);color:var(--t2);cursor:pointer;font-family:inherit';
+  skip.onclick=function(){ document.body.removeChild(overlay); cb({reason:'',tags:[],itemId:opts.itemId,source:opts.source,action:opts.action,itemTitle:opts.title,itemOrg:opts.org}); };
+  var save=document.createElement('button'); save.type='button'; save.textContent='Save & '+actionVerb.toLowerCase();
+  save.style.cssText='font-size:12px;font-weight:500;padding:6px 16px;border-radius:6px;border:none;background:var(--teal);color:#fff;cursor:pointer;font-family:inherit';
+  save.onclick=function(){
+    var tags=Object.keys(pickedTags).filter(function(k){return pickedTags[k];});
+    document.body.removeChild(overlay);
+    cb({reason:input.value.trim(),tags:tags,itemId:opts.itemId,source:opts.source,action:opts.action,itemTitle:opts.title,itemOrg:opts.org});
+  };
+  btnRow.appendChild(cancel); btnRow.appendChild(skip); btnRow.appendChild(save);
+  modal.appendChild(btnRow);
+  overlay.appendChild(modal); document.body.appendChild(overlay);
+  setTimeout(function(){input.focus();},50);
+};
+
+var PRIMARY_KEY = 'erin_primary_device';
+function isPrimary(){ return localStorage.getItem(PRIMARY_KEY)==='1'; }
+function setPrimary(v){
+  localStorage.setItem(PRIMARY_KEY, v?'1':'0');
+  updatePrimaryUI();
+}
+function updatePrimaryUI(){
+  var btn = document.getElementById('primary-toggle');
+  if(!btn) return;
+  if(isPrimary()){
+    btn.textContent = '\u2713 Primary device (Erin\u2019s computer)';
+    btn.style.cssText = 'font-size:12px;font-weight:500;padding:5px 14px;border-radius:999px;border:1.5px solid var(--teal);background:var(--teal);color:#fff;cursor:pointer;font-family:var(--fn)';
+  } else {
+    btn.textContent = 'Set as primary device';
+    btn.style.cssText = 'font-size:12px;font-weight:500;padding:5px 14px;border-radius:999px;border:1px solid var(--bds);background:transparent;color:var(--t2);cursor:pointer;font-family:var(--fn)';
+  }
+}
+
+function pullCloud(){
+  fetch('https://api.jsonbin.io/v3/b/'+BIN+'/latest',{ headers:{'X-Master-Key':KEY} })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if(data.record && data.record.items){
+      var cloud = data.record.items;
+      var local = load();
+      var merged;
+      if(isPrimary()){
+        // Primary: local always wins, push local to cloud
+        merged = local;
+        push(local);
+      } else {
+        // Secondary: cloud wins, merge on top of local
+        merged = Object.assign({}, local, cloud);
+      }
+      if(JSON.stringify(merged) !== JSON.stringify(local)){
+        save(merged); renderList();
+      }
+      flash('Synced \u2713');
+    }
+  }).catch(function(){});
+}
+
+function setMode(m){
+  document.getElementById('mode-list').style.display=m==='list'?'block':'none';
+  document.getElementById('mode-browse').style.display=m==='browse'?'block':'none';
+  document.getElementById('tab-list').classList.toggle('active',m==='list');
+  document.getElementById('tab-browse').classList.toggle('active',m==='browse');
+  if(m==='browse') renderBrowse();
+}
+
+function el(tag,cls,txt){ var e=document.createElement(tag); if(cls)e.className=cls; if(txt!=null)e.textContent=txt; return e; }
+
+function catCls(t){
+  if(!t) return 'ip-next';
+  if(t.indexOf('Graduate')>-1) return 'ip-grad';
+  if(t.indexOf('Internship')>-1) return 'ip-intern';
+  if(t.indexOf('Career')>-1) return 'ip-job';
+  if(t.indexOf('Service')>-1) return 'ip-service';
+  return 'ip-next';
+}
+
+function catLbl(c){
+  if(!c) return '';
+  var next=c.indexOf('Next')>-1;
+  if(c.indexOf('Graduate')>-1)   return next?'Grad - Next':'Grad Program';
+  if(c.indexOf('Internship')>-1) return next?'Intern - Next':'Internship';
+  if(c.indexOf('Career')>-1)     return next?'Jobs - Next':'Career';
+  if(c.indexOf('Service')>-1)    return next?'Service - Next':'Service';
+  return c;
+}
+
+function buildFilters(elId, cur, fn){
+  var wrap=document.getElementById(elId); wrap.innerHTML='';
+  CATS.forEach(function(c){
+    var b=el('button','f-btn'+(c===cur?' on':''),c);
+    b.onclick=function(){ fn(c); };
+    wrap.appendChild(b);
+  });
+}
+
+
+// ── Merge saved item with ALL array to get enriched fields (url, pay, etc.) ──
+function mergeWithAll(it){
+  var match = ALL.find(function(a){ return a.id === it.id; });
+  if(!match) return it;
+  var merged = Object.assign({}, match, it); // saved fields override ALL (preserve notes, _done etc.)
+  // But for enrichment fields missing from saved, take from ALL
+  var enrichFields = ['url','url_label','url2','url2_label','pay','location','benefits','stipend','extbody','contact'];
+  enrichFields.forEach(function(f){
+    if(!merged[f] && match[f]) merged[f] = match[f];
+  });
+  return merged;
+}
+
+function makeListCard(it){
+  it=mergeWithAll(it);
+  var card=el('div','item-card'+(it._done?' done':''));
+  card.id='card-'+it.id;
+
+  var row=el('div','item-row1');
+
+  var chk=document.createElement('input');
+  chk.type='checkbox'; chk.className='item-check'; chk.checked=!!it._done;
+  chk.onchange=function(){ toggleDone(it.id,chk.checked); };
+  row.appendChild(chk);
+
+  var main=el('div','item-main');
+  main.appendChild(el('div','item-title',it.title));
+  main.appendChild(el('div','item-org',it.org));
+
+  var pills=el('div','item-pills');
+  var cp=el('span','ip '+catCls(it.cat||it.type)); cp.textContent=catLbl(it.cat||it.type); pills.appendChild(cp);
+  if(it.badge){ var bp=el('span','ip ip-next',it.badge); pills.appendChild(bp); }
+  (it.pills||[]).slice(0,3).forEach(function(p){ pills.appendChild(el('span','ip ip-next',p)); });
+  main.appendChild(pills);
+
+  var meta=el('div','item-meta');
+  if(it.deadline){ var dm=el('span'); dm.innerHTML='<span class="im-lbl">Deadline:</span> '+it.deadline; meta.appendChild(dm); }
+  if(it.start){    var sm=el('span'); sm.innerHTML='<span class="im-lbl">Start:</span> '+it.start; meta.appendChild(sm); }
+  main.appendChild(meta);
+
+  if(it._note){ var nd=el('div','note-display','Note: '+it._note); main.appendChild(nd); }
+
+  // ── Rich detail panel ──
+  var detail=el('div','item-detail'); detail.id='detail-'+it.id;
+
+  // Badge
+  if(it.badge){ var ib=el('div','id-badge',it.badge); detail.appendChild(ib); }
+
+  // Deadline + Start row
+  if(it.deadline||it.start){
+    var mr=el('div','id-meta-row');
+    if(it.deadline){ var di=el('div','id-meta-item'); di.innerHTML='<strong>Deadline:</strong> '+it.deadline; mr.appendChild(di); }
+    if(it.start){ var si=el('div','id-meta-item'); si.innerHTML='<strong>Start:</strong> '+it.start; mr.appendChild(si); }
+    detail.appendChild(mr);
+  }
+
+  // Body text
+  if(it.body){
+    var bl=el('div','id-section-label','About this opportunity'); detail.appendChild(bl);
+    var bd=el('div','id-body',it.body); detail.appendChild(bd);
+  }
+
+  // Pills
+  if(it.pills&&it.pills.length){
+    var pl=el('div','id-section-label','Focus areas'); detail.appendChild(pl);
+    var pd=el('div','id-pills');
+    it.pills.forEach(function(p){ pd.appendChild(el('span','id-pill',p)); });
+    detail.appendChild(pd);
+  }
+
+  // ── Pay / Location / Benefits / Stipend ──
+  if(it.pay||it.location||it.benefits||it.stipend){
+    detail.appendChild(el('div','id-section-label','Compensation & location'));
+    var mr2=el('div','id-meta-row');
+    if(it.pay){ var pi=el('div','id-meta-item'); pi.innerHTML='<strong>Pay:</strong> '+it.pay; mr2.appendChild(pi); }
+    if(it.stipend){ var sti=el('div','id-meta-item'); sti.innerHTML='<strong>Stipend:</strong> '+it.stipend; mr2.appendChild(sti); }
+    if(it.location){ var li2=el('div','id-meta-item'); li2.innerHTML='<strong>Location:</strong> '+it.location; mr2.appendChild(li2); }
+    if(it.benefits){ var bi=el('div','id-meta-item'); bi.innerHTML='<strong>Benefits:</strong> '+it.benefits; mr2.appendChild(bi); }
+    detail.appendChild(mr2);
+  }
+  // ── Extended detail ──
+  if(it.extbody){ detail.appendChild(el('div','id-section-label','Additional detail')); var eb=el('div','id-body',it.extbody); eb.style.fontSize='12px'; detail.appendChild(eb); }
+  if(it.contact){ detail.appendChild(el('div','id-section-label','How to apply / contact')); var cb=el('div','id-body',it.contact); cb.style.fontSize='12px'; detail.appendChild(cb); }
+  // ── Links ──
+  var lnkDiv=document.createElement('div'); lnkDiv.style.cssText='display:flex;flex-wrap:wrap;gap:6px;margin-top:.5rem';
+  if(it.url){ var al=document.createElement('a'); al.className='id-link id-link-primary'; al.href=it.url; al.target='_blank'; al.innerHTML='&#128279; '+(it.url_label||'Apply / View posting')+' &rarr;'; lnkDiv.appendChild(al); }
+  if(it.url2){ var al2=document.createElement('a'); al2.className='id-link'; al2.href=it.url2; al2.target='_blank'; al2.innerHTML='&#128279; '+(it.url2_label||'More info')+' &rarr;'; lnkDiv.appendChild(al2); }
+  if(it.src){ var sl=document.createElement('a'); sl.className='id-link'; sl.href=it.src; sl.target='_blank'; sl.textContent='Open '+(it.src_label||'source page')+' →'; lnkDiv.appendChild(sl); }
+  if(lnkDiv.children.length) detail.appendChild(lnkDiv);
+  // ── Source label ──
+  detail.appendChild(el('div','id-section-label','Section'));
+  var oi=el('div','id-meta-item'); oi.textContent=(it.src_label||it.cat||''); detail.appendChild(oi);
+
+  main.appendChild(detail);
+
+  var acts=el('div','item-actions');
+  if(it.body||it.deadline||it.pills){
+    var db=el('button','act-btn','Details'); db.onclick=function(){ detail.classList.toggle('open'); db.textContent=detail.classList.contains('open')?'Hide details':'Details'; }; acts.appendChild(db);
+    acts.appendChild(el('span','act-sep',' · '));
+  }
+  var noteArea=el('div','note-area'); noteArea.id='note-'+it.id;
+  var nb=el('button','act-btn','Note'); nb.onclick=function(){ noteArea.classList.toggle('open'); }; acts.appendChild(nb);
+
+  var rb=el('button','act-remove','Remove');
+  rb.onclick=function(){
+    window.showArchiveModal(
+      {title:it.title, org:it.org, source:'mylist', itemId:it.id, action:'removed'},
+      function(result){
+        if(!result) return; // cancelled — leave item in place
+        logArchive(result);
+        delItem(it.id); renderList();
+        if(document.getElementById('mode-browse').style.display!=='none') renderBrowse();
+      }
+    );
+  };
+  acts.appendChild(rb);
+  main.appendChild(acts);
+
+  var ta=el('textarea','note-input'); ta.placeholder='Add a note...'; ta.value=it._note||'';
+  var sb=el('button','note-save','Save note');
+  sb.onclick=function(){ var m=load(); if(m[it.id]){m[it.id]._note=ta.value; save(m); push(m);} noteArea.classList.remove('open'); renderList(); };
+  noteArea.appendChild(ta); noteArea.appendChild(el('br')); noteArea.appendChild(sb);
+  main.appendChild(noteArea);
+
+  row.appendChild(main); card.appendChild(row);
+  return card;
+}
+
+function renderList(){
+  var map=load(), all=Object.values(map), n=all.length;
+  document.getElementById('count-pill').textContent=n+' saved';
+  document.getElementById('tab-count').textContent=n?'('+n+')':'';
+  document.getElementById('hero-sub').textContent=n
+    ? n+' opportunit'+(n===1?'y':'ies')+' saved'
+    : 'No items saved yet - use Browse All to add some';
+  buildFilters('list-filters',mf,function(c){ mf=c; renderList(); });
+  var items=mf==='All'?all:all.filter(function(it){ return it.type===mf; });
+  var body=document.getElementById('list-body'); body.innerHTML='';
+  if(!items.length){
+    var e=el('div','empty');
+    e.innerHTML='<div class="empty-icon">'+(n?'&#128269;':'&#128203;')+'</div>'
+      +'<div class="empty-title">'+(n?'No items match':'Your list is empty')+'</div>'
+      +'<div class="empty-body">'+(n?'Try a different category filter.':'Switch to Browse All to add opportunities.')+'</div>';
+    body.appendChild(e); return;
+  }
+  var groups={};
+  items.forEach(function(it){ var g=it.cat||it.type||'Other'; if(!groups[g])groups[g]=[]; groups[g].push(it); });
+  Object.keys(groups).sort().forEach(function(g){
+    var lbl=el('div','sec-label'); lbl.innerHTML=g+' <span class="sec-count">'+groups[g].length+'</span>'; body.appendChild(lbl);
+    groups[g].forEach(function(it){ body.appendChild(makeListCard(it)); });
+  });
+}
+
+function toggleDone(id,val){
+  var m=load(); if(m[id]){ m[id]._done=val; save(m); push(m); }
+  var c=document.getElementById('card-'+id); if(c) c.classList.toggle('done',val);
+}
+
+function renderBrowse(){
+  var q=(document.getElementById('bs')||{}).value||''; q=q.toLowerCase();
+  buildFilters('browse-filters',bf,function(c){ bf=c; renderBrowse(); });
+  var items=ALL;
+  if(bf!=='All') items=items.filter(function(it){ return it.type===bf; });
+  if(q) items=items.filter(function(it){
+    return (it.title+it.org+it.cat+(it.deadline||'')+(it.body||'')+(it.pills||[]).join(' ')).toLowerCase().indexOf(q)>-1;
+  });
+  var groups={};
+  items.forEach(function(it){ var g=it.cat||'Other'; if(!groups[g])groups[g]=[]; groups[g].push(it); });
+  var body=document.getElementById('browse-body'); body.innerHTML='';
+  if(!items.length){
+    body.innerHTML='<div class="empty"><div class="empty-icon">&#128269;</div><div class="empty-title">No results</div><div class="empty-body">Try a different search or filter.</div></div>';
+    return;
+  }
+  Object.keys(groups).sort().forEach(function(g){
+    var lbl=el('div','sec-label'); lbl.innerHTML=g+' <span class="sec-count">'+groups[g].length+'</span>'; body.appendChild(lbl);
+    groups[g].forEach(function(it){
+      it=mergeWithAll(it);
+      var saved=has(it.id);
+      var card=el('div','browse-card'+(saved?' is-saved':'')); card.id='bc-'+it.id;
+      card.appendChild(el('div','browse-title',it.title));
+      card.appendChild(el('div','browse-org',it.org));
+      var meta=el('div','browse-meta');
+      if(it.deadline){ var dm=el('span'); dm.innerHTML='<strong style="font-weight:500">Deadline:</strong> '+it.deadline; meta.appendChild(dm); }
+      if(it.start){ if(it.deadline){meta.appendChild(el('span',null,' · '));} var sm=el('span'); sm.innerHTML='<strong style="font-weight:500">Start:</strong> '+it.start; meta.appendChild(sm); }
+      card.appendChild(meta);
+      // ── Rich browse detail panel ──
+      var bd=el('div','item-detail'); bd.id='bb-'+it.id;
+      if(it.badge){ bd.appendChild(el('div','id-badge',it.badge)); }
+      if(it.deadline||it.start){
+        var bmr=el('div','id-meta-row');
+        if(it.deadline){ var bdi=el('div','id-meta-item'); bdi.innerHTML='<strong>Deadline:</strong> '+it.deadline; bmr.appendChild(bdi); }
+        if(it.start){ var bsi=el('div','id-meta-item'); bsi.innerHTML='<strong>Start:</strong> '+it.start; bmr.appendChild(bsi); }
+        bd.appendChild(bmr);
+      }
+      if(it.body){ bd.appendChild(el('div','id-section-label','About this opportunity')); bd.appendChild(el('div','id-body',it.body)); }
+      if(it.pills&&it.pills.length){
+        bd.appendChild(el('div','id-section-label','Focus areas'));
+        var bpd=el('div','id-pills'); it.pills.forEach(function(p){ bpd.appendChild(el('span','id-pill',p)); }); bd.appendChild(bpd);
+      }
+      if(it.pay||it.location||it.benefits||it.stipend){
+        bd.appendChild(el('div','id-section-label','Compensation & location'));
+        var bmr2=el('div','id-meta-row');
+        if(it.pay){ var bpi=el('div','id-meta-item'); bpi.innerHTML='<strong>Pay:</strong> '+it.pay; bmr2.appendChild(bpi); }
+        if(it.stipend){ var bsti=el('div','id-meta-item'); bsti.innerHTML='<strong>Stipend:</strong> '+it.stipend; bmr2.appendChild(bsti); }
+        if(it.location){ var bli=el('div','id-meta-item'); bli.innerHTML='<strong>Location:</strong> '+it.location; bmr2.appendChild(bli); }
+        if(it.benefits){ var bbi=el('div','id-meta-item'); bbi.innerHTML='<strong>Benefits:</strong> '+it.benefits; bmr2.appendChild(bbi); }
+        bd.appendChild(bmr2);
+      }
+      if(it.extbody){ bd.appendChild(el('div','id-section-label','Additional detail')); var beb=el('div','id-body',it.extbody); beb.style.fontSize='12px'; bd.appendChild(beb); }
+      if(it.contact){ bd.appendChild(el('div','id-section-label','How to apply')); var bcb=el('div','id-body',it.contact); bcb.style.fontSize='12px'; bd.appendChild(bcb); }
+      var blnkDiv=document.createElement('div'); blnkDiv.style.cssText='display:flex;flex-wrap:wrap;gap:6px;margin-top:.5rem';
+      if(it.url){ var bal=document.createElement('a'); bal.className='id-link id-link-primary'; bal.href=it.url; bal.target='_blank'; bal.innerHTML='&#128279; '+(it.url_label||'Apply / View posting')+' &rarr;'; blnkDiv.appendChild(bal); }
+      if(it.url2){ var bal2=document.createElement('a'); bal2.className='id-link'; bal2.href=it.url2; bal2.target='_blank'; bal2.innerHTML='&#128279; '+(it.url2_label||'More info')+' &rarr;'; blnkDiv.appendChild(bal2); }
+      if(it.src){ var bsl=document.createElement('a'); bsl.className='id-link'; bsl.href=it.src; bsl.target='_blank'; bsl.textContent='Open '+(it.src_label||'source page')+' →'; blnkDiv.appendChild(bsl); }
+      if(blnkDiv.children.length) bd.appendChild(blnkDiv);
+      card.appendChild(bd);
+
+      var acts=el('div','browse-actions');
+      var sb=el('button','b-save-btn'+(saved?' saved':''),saved?'Saved':'Save to My List');
+      sb.onclick=function(){
+        if(has(it.id)){
+          window.showArchiveModal(
+            {title:it.title, org:it.org, source:'mylist', itemId:it.id, action:'removed'},
+            function(result){
+              if(!result) return; // cancelled
+              logArchive(result);
+              delItem(it.id);
+              renderList(); renderBrowse();
+            }
+          );
+          return;
+        } else { addItem(Object.assign({},it)); }
+        renderList(); renderBrowse();
+      };
+      acts.appendChild(sb);
+      if(it.body||it.deadline||it.pills||it.url||it.pay||it.extbody){ var tb=el('button','b-toggle','Details'); tb.onclick=function(){ bd.classList.toggle('open'); tb.textContent=bd.classList.contains('open')?'Hide details':'Details'; }; acts.appendChild(tb); }
+      card.appendChild(acts);
+      body.appendChild(card);
+    });
+  });
+}
+
+renderList();
+updatePrimaryUI();
+pullCloud();
+
+</script>
+</body>
+</html>
